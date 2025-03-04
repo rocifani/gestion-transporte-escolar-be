@@ -1,18 +1,18 @@
 import express from "express";
-import diaryRouter from "./routes/diaries.ts";
-
+import db from "./database/db";
+import routes from "./routes/routes";
 
 const app = express();
 app.use(express.json());
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-app.get("/", (_req, res) => {
-  console.log("hola");
-  res.send("Hello World");
+app.get("/", async (_req, res) => {
+  const results = await db.query("SELECT * FROM role");
+  res.json(results);
 });
 
-app.use("/api/diaries", diaryRouter);
+app.use('/', routes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
