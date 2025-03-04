@@ -12,17 +12,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const db_1 = __importDefault(require("./database/db"));
-const routes_1 = __importDefault(require("./routes/routes"));
-const app = (0, express_1.default)();
-app.use(express_1.default.json());
-const PORT = process.env.PORT || 3000;
-app.get("/", (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const results = yield db_1.default.query("SELECT * FROM role");
-    res.json(results);
-}));
-app.use('/', routes_1.default);
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+const promise_1 = __importDefault(require("mysql2/promise"));
+const config = {
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    database: 'db_gestion_transporte',
+    connectionLimit: 10,
+    waitForConnections: true,
+    queueLimit: 0,
+};
+const pool = promise_1.default.createPool(config);
+class Database {
+    query(query_1) {
+        return __awaiter(this, arguments, void 0, function* (query, values = null) {
+            const connection = yield pool.getConnection();
+            try {
+                const [rows] = yield connection.query(query, values);
+                return rows;
+            }
+            catch (error) {
+                throw error;
+            }
+            finally {
+                connection.release();
+            }
+        });
+    }
+}
+exports.default = new Database();
