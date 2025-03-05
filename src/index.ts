@@ -1,13 +1,17 @@
 import express from "express";
+import cors from "cors";
 import db from "./database/db";
 import routes from "./routes/routes";
 
 const app = express();
+app.use(cors({origin: "*"}));
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
-app.get("/", async (_req, res) => {
+
+
+app.get("/", async (_req, res) => { // TO DO: cambiar esto
   const results = await db.query("SELECT * FROM role");
   res.json(results);
 });
