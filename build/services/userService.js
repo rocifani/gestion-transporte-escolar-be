@@ -29,6 +29,15 @@ class UserService {
             return undefined;
         });
     }
+    getUserByEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield db_1.default.query("SELECT * FROM user WHERE email = ?", email);
+            if (Array.isArray(user) && user.length > 0) {
+                return user[0];
+            }
+            return undefined;
+        });
+    }
     postUser(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.default.query("INSERT INTO user SET ?", data);

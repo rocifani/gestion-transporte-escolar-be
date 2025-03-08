@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const userService_1 = __importDefault(require("../services/userService"));
 const requestHandlers_1 = require("../utils/requestHandlers");
+const validators_1 = require("../utils/validators");
 class UserController {
     getAllUsers(_req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -46,13 +47,29 @@ class UserController {
     postUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const data = req.body; // TO DO: validar datos del body en el back
-                const user = yield userService_1.default.postUser(data);
+                const { email, password, confirmPassword } = req.body;
+                if (!email || !password || !confirmPassword) {
+                    return (0, requestHandlers_1.sendError)(res, "Todos los campos son obligatorios", 400);
+                }
+                if (!(0, validators_1.isValidEmail)(email)) {
+                    return (0, requestHandlers_1.sendError)(res, "El formato del email es inválido", 400);
+                }
+                if (!(0, validators_1.isValidPassword)(password)) {
+                    return (0, requestHandlers_1.sendError)(res, "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número", 400);
+                }
+                if (password !== confirmPassword) {
+                    return (0, requestHandlers_1.sendError)(res, "Las contraseñas no coinciden", 400);
+                }
+                const existingUser = yield userService_1.default.getUserByEmail(email);
+                if (existingUser) {
+                    return (0, requestHandlers_1.sendError)(res, "El email ya está registrado", 400);
+                }
+                const user = yield userService_1.default.postUser(req.body);
                 if (user) {
                     (0, requestHandlers_1.sendSuccess)(res, user);
                 }
                 else {
-                    (0, requestHandlers_1.sendError)(res, "User could not be created", 500); // TO DO: manejar errores específicos
+                    (0, requestHandlers_1.sendError)(res, "No se pudo crear el usuario", 500);
                 }
             }
             catch (error) {
@@ -64,13 +81,13 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const id = Number(req.params['id']);
-                const data = req.body; // TO DO: validar datos del body en el back
+                const data = req.body;
                 const user = yield userService_1.default.putUser(id, data);
                 if (user) {
                     (0, requestHandlers_1.sendSuccess)(res, user);
                 }
                 else {
-                    (0, requestHandlers_1.sendError)(res, "User not found", 404); // TO DO: manejar errores específicos
+                    (0, requestHandlers_1.sendError)(res, "Usuario no encontrado", 404);
                 }
             }
             catch (error) {

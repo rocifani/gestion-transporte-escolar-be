@@ -17,6 +17,14 @@ class UserService {
         return undefined;
     }
 
+    async getUserByEmail(email: string): Promise<User | undefined> {
+        const user = await db.query<RowDataPacket[]>("SELECT * FROM user WHERE email = ?", email);
+        if(Array.isArray(user) && user.length > 0){
+            return user[0] as User;
+        }
+        return undefined;
+    }
+
     async postUser(data: User): Promise<User | undefined> {
         const result = await db.query<ResultSetHeader>("INSERT INTO user SET ?", data);
         if(result.insertId){
