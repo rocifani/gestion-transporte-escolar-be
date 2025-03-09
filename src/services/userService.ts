@@ -41,6 +41,14 @@ class UserService {
         return undefined;
     }
 
+    async getUserByEmail(email: string): Promise<User | undefined> {
+        const user = await db.query<RowDataPacket[]>("SELECT * FROM user WHERE email = ?", email);
+        if(Array.isArray(user) && user.length > 0){
+            return user[0] as User;
+        }
+        return undefined;
+    }
+
     async putUser(id: number, data: User): Promise<User | undefined> {
         const result = await db.query<ResultSetHeader>("UPDATE user SET ? WHERE id = ?", [data, id]);
         if(result.affectedRows){

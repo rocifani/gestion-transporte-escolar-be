@@ -69,18 +69,17 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const data = req.body;
-                const { email, password, full_name, role_id } = req.body;
-                const existingUser = yield userService_1.default.signup(email);
+                const existingUser = yield userService_1.default.getUserByEmail(req.body.email);
                 if (existingUser) {
                     return (0, requestHandlers_1.sendError)(res, "El email ya está registrado", 400);
                 }
-                if (!email || !password || !full_name || !role_id) {
+                if (!req.body.email || !req.body.password || !req.body.full_name || !req.body.role_id) {
                     return (0, requestHandlers_1.sendError)(res, "Todos los campos son obligatorios", 400);
                 }
-                if (!(0, validators_1.isValidEmail)(email)) {
+                if (!(0, validators_1.isValidEmail)(req.body.email)) {
                     return (0, requestHandlers_1.sendError)(res, "El formato del email es inválido", 400);
                 }
-                if (!(0, validators_1.isValidPassword)(password)) {
+                if (!(0, validators_1.isValidPassword)(req.body.password)) {
                     return (0, requestHandlers_1.sendError)(res, "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número", 400);
                 }
                 //token

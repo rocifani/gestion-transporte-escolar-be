@@ -51,22 +51,21 @@ class UserController {
     async signup(req: Request, res: Response){ // esto es el signup
         try{
             const data = req.body;
-            const { email, password, full_name, role_id } = req.body;
             
-            const existingUser = await userService.signup(email);
+            const existingUser = await userService.getUserByEmail(req.body.email);
             if (existingUser) {
                 return sendError(res, "El email ya está registrado", 400);
             }
 
-            if (!email || !password || !full_name || !role_id) {
+            if (!req.body.email || !req.body.password || !req.body.full_name || !req.body.role_id) {
                 return sendError(res, "Todos los campos son obligatorios", 400);
             }
 
-            if (!isValidEmail(email)) {
+            if (!isValidEmail(req.body.email)) {
                 return sendError(res, "El formato del email es inválido", 400);
             }
 
-            if (!isValidPassword(password)) {
+            if (!isValidPassword(req.body.password)) {
                 return sendError(res, "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número", 400);
             }
             
