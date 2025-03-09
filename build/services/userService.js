@@ -13,6 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../database/db"));
+const user_1 = require("../models/user");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 class UserService {
     getAllUsers() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -29,17 +31,22 @@ class UserService {
             return undefined;
         });
     }
-    getUserByEmail(email) {
+    login(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield db_1.default.query("SELECT * FROM user WHERE email = ?", email);
-            if (Array.isArray(user) && user.length > 0) {
-                return user[0];
+            if (user.length > 0) {
+                const passMatch = yield bcryptjs_1.default.compare(password, user[0].password);
+                if (passMatch) {
+                    return user[0];
+                }
             }
             return undefined;
         });
     }
-    postUser(data) {
+    signup(data) {
         return __awaiter(this, void 0, void 0, function* () {
+            const userInstance = new user_1.User();
+            data.password = yield userInstance.encryptPassword(data.password);
             const result = yield db_1.default.query("INSERT INTO user SET ?", data);
             if (result.insertId) {
                 return yield this.getUserById(result.insertId);

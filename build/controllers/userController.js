@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const userService_1 = __importDefault(require("../services/userService"));
 const requestHandlers_1 = require("../utils/requestHandlers");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const validators_1 = require("../utils/validators");
 class UserController {
     getAllUsers(_req, res) {
@@ -30,7 +31,7 @@ class UserController {
     getUserById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const id = Number(req.params['id']);
+                const id = Number(req.userId);
                 const user = yield userService_1.default.getUserById(id);
                 if (user) {
                     (0, requestHandlers_1.sendSuccess)(res, user);
@@ -44,11 +45,36 @@ class UserController {
             }
         });
     }
-    postUser(req, res) {
+    login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { email, password, confirmPassword } = req.body;
-                if (!email || !password || !confirmPassword) {
+                const mail = req.body.email;
+                const password = req.body.password;
+                const user = yield userService_1.default.login(mail, password);
+                if (user) {
+                    const token = jsonwebtoken_1.default.sign({ _id: user.id }, process.env.SECRET_TOKEN || 'tokentest', { expiresIn: '1h' });
+                    res.header('auth-token', token);
+                    (0, requestHandlers_1.sendSuccess)(res, user);
+                }
+                else {
+                    (0, requestHandlers_1.sendError)(res, "User not found", 404);
+                }
+            }
+            catch (error) {
+                (0, requestHandlers_1.sendError)(res, error.message);
+            }
+        });
+    }
+    signup(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const data = req.body;
+                const { email, password, full_name, role_id } = req.body;
+                const existingUser = yield userService_1.default.signup(email);
+                if (existingUser) {
+                    return (0, requestHandlers_1.sendError)(res, "El email ya está registrado", 400);
+                }
+                if (!email || !password || !full_name || !role_id) {
                     return (0, requestHandlers_1.sendError)(res, "Todos los campos son obligatorios", 400);
                 }
                 if (!(0, validators_1.isValidEmail)(email)) {
@@ -57,15 +83,11 @@ class UserController {
                 if (!(0, validators_1.isValidPassword)(password)) {
                     return (0, requestHandlers_1.sendError)(res, "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número", 400);
                 }
-                if (password !== confirmPassword) {
-                    return (0, requestHandlers_1.sendError)(res, "Las contraseñas no coinciden", 400);
-                }
-                const existingUser = yield userService_1.default.getUserByEmail(email);
-                if (existingUser) {
-                    return (0, requestHandlers_1.sendError)(res, "El email ya está registrado", 400);
-                }
-                const user = yield userService_1.default.postUser(req.body);
+                //token
+                const token = jsonwebtoken_1.default.sign({ _id: req.params['id'] }, process.env.SECRET_TOKEN || 'tokentest');
+                const user = yield userService_1.default.signup(data);
                 if (user) {
+                    res.header('auth-token', token);
                     (0, requestHandlers_1.sendSuccess)(res, user);
                 }
                 else {
