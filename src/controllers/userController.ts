@@ -6,11 +6,10 @@ import jwt from 'jsonwebtoken';
 class UserController {
 
     async getAllUsers(_req: Request, res: Response){
-        try{
+        try {
             const users = await userService.getAllUsers();
             sendSuccess(res, users);
-        }
-        catch(error: any){
+        } catch (error: any) {
             sendError(res, error.message);
         }
     }
@@ -19,14 +18,12 @@ class UserController {
         try{
             const id = Number(req.userId);
             const user = await userService.getUserById(id);
-            if(user){
+            if (user) {
                 sendSuccess(res, user);
-            }
-            else{
+            } else {
                 sendError(res, "User not found", 404);
             }
-        }
-        catch(error: any){
+        } catch (error: any) {
             sendError(res, error.message);
         }
     }
@@ -61,12 +58,10 @@ class UserController {
             if(user){
                 res.header('auth-token', token);
                 sendSuccess(res, user);
+            } else {
+                sendError(res, "No se pudo crear el usuario", 500);
             }
-            else{
-                sendError(res, "User could not be created", 500); // TO DO: manejar errores específicos
-            }
-        }
-        catch(error: any){
+        } catch (error: any) {
             sendError(res, error.message);
         }
     }
@@ -76,16 +71,14 @@ class UserController {
     async putUser(req: Request, res: Response){
         try{
             const id = Number(req.params['id']);
-            const data = req.body; // TO DO: validar datos del body en el back
+            const data = req.body;
             const user = await userService.putUser(id, data);
-            if(user){
+            if (user) {
                 sendSuccess(res, user);
+            } else {
+                sendError(res, "Usuario no encontrado", 404);
             }
-            else{
-                sendError(res, "User not found", 404); // TO DO: manejar errores específicos
-            }
-        }
-        catch(error: any){
+        } catch (error: any) {
             sendError(res, error.message);
         }
     }
