@@ -1,15 +1,48 @@
-export interface User {
-    id: number;
-    email: string;
-    password: string;
-    role_id: number; 
-    active: boolean;
-    full_name: string;
-    phone_number?: string;
-    address?: string;
-    created_at: string;
-    updated_at: string;
-    profile_picture?: string;
-    birth_date?: string;
-  }
+import { Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import * as bcrypt from "bcryptjs";
+
+@Entity("users") // Nombre de la tabla en MySQL
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: true })
+  email: string;
+
+  @Column()
+  password: string;
+
+  @Column()
+  role_id: number;
+
+  @Column({ default: true })
+  active: boolean;
+
+  @Column()
+  full_name: string;
+
+  @Column({ nullable: true })
+  phone_number?: string;
+
+  @Column({ nullable: true })
+  address?: string;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  created_at: string;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
+  updated_at: string;
+
+  @Column({ nullable: true })
+  profile_picture?: string;
+
+  @Column({ type: "date", nullable: true })
+  birth_date?: string;
+
   
+  async encryptPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(10);
+    return bcrypt.hash(password, salt);
+  }
+
+}

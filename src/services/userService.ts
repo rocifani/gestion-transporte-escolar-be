@@ -1,6 +1,7 @@
 import db from "../database/db";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { User } from "../models/user";
+import bcrypt from "bcryptjs";
 
 class UserService {
 
@@ -17,11 +18,26 @@ class UserService {
         return undefined;
     }
 
-    async postUser(data: User): Promise<User | undefined> {
+    async login(email: string, password: string): Promise<User | undefined> {
+        const user = await db.query<RowDataPacket[]>("SELECT * FROM user WHERE email = ?", email);
+        if(user.length > 0){
+            const passMatch = await bcrypt.compare(password, user[0].password);
+            if(passMatch){
+                return user[0] as User;
+            }
+        }
+        return undefined;
+    }
+
+    async signup(data: User): Promise<User | undefined> {  
+        const userInstance = new User();
+        data.password = await userInstance.encryptPassword(data.password);
         const result = await db.query<ResultSetHeader>("INSERT INTO user SET ?", data);
-        if(result.insertId){
+    
+        if (result.insertId) {
             return await this.getUserById(result.insertId);
         }
+    
         return undefined;
     }
 
@@ -32,6 +48,8 @@ class UserService {
         }
         return undefined;
     }
+
+    
 
     // TO DO: implementar delete. No se si hacer un borrado definitivo o un borrado lógico.
 
