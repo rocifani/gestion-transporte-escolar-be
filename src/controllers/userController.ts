@@ -37,10 +37,19 @@ class UserController {
             if(user){
                 const token: string = jwt.sign({_id: user.id}, process.env.SECRET_TOKEN || 'tokentest', {expiresIn: '1h'});
                 res.header('auth-token', token);
+                res.json({
+                    token,
+                    user: {
+                        id: user.id,
+                        full_name: user.full_name,
+                        email: user.email,
+                        role_id: user.role_id
+                    }
+                })
                 sendSuccess(res, user);
             }
             else{
-                sendError(res, "User not found", 404);
+                sendError(res, "El mail y/o la contraseña son incorrectos.", 404);
             }
         }
         catch(error: any){
@@ -48,13 +57,13 @@ class UserController {
         }
     }
 
-    async signup(req: Request, res: Response){ // esto es el signup
+    async signup(req: Request, res: Response){
         try{
             const data = req.body;
             
             const existingUser = await userService.getUserByEmail(req.body.email);
             if (existingUser) {
-                return sendError(res, "El email ya está registrado", 400);
+                return sendError(res, "El email ya está registrado. Intente con otro o inicie sesión", 400);
             }
 
             if (!req.body.email || !req.body.password || !req.body.full_name || !req.body.role_id) {
@@ -69,7 +78,6 @@ class UserController {
                 return sendError(res, "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número", 400);
             }
             
-            //token
             const token: string = jwt.sign({_id: req.params['id']}, process.env.SECRET_TOKEN || 'tokentest'); 
 
             const user = await userService.signup(data);
@@ -80,6 +88,8 @@ class UserController {
                 sendError(res, "No se pudo crear el usuario", 500);
             }
         } catch (error: any) {
+            console.log(res);
+            console.log(error.message);
             sendError(res, error.message);
         }
     }
