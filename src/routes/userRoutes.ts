@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { TokenValidation } from "../libs/verifyToken";
+import { TokenValidation } from "../utils/verifyToken";
 import userController from "../controllers/userController";
 
 const userRouter = Router();
