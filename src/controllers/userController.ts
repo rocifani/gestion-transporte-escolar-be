@@ -35,9 +35,9 @@ class UserController {
             const password= req.body.password;
             const user = await userService.login(mail, password);
             if(user){
-                const token: string = jwt.sign({_id: user.id}, process.env.SECRET_TOKEN || 'tokentest', {expiresIn: '1h'});
+                const token: string = jwt.sign({_id: user.id, role_id: req.params['role_id']}, process.env.SECRET_TOKEN || 'tokentest', {expiresIn: '1h'});
                 res.header('auth-token', token);
-                res.json({
+                return res.json({
                     token,
                     user: {
                         id: user.id,
@@ -46,7 +46,8 @@ class UserController {
                         role_id: user.role_id
                     }
                 })
-                sendSuccess(res, user);
+                return sendSuccess(res, user);
+                
             }
             else{
                 sendError(res, "El mail y/o la contraseña son incorrectos.", 404);
@@ -78,7 +79,7 @@ class UserController {
                 return sendError(res, "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número", 400);
             }
             
-            const token: string = jwt.sign({_id: req.params['id']}, process.env.SECRET_TOKEN || 'tokentest'); 
+            const token: string = jwt.sign({_id: req.params['id'], role_id: req.params['role_id']}, process.env.SECRET_TOKEN || 'tokentest'); 
 
             const user = await userService.signup(data);
             if(user){
