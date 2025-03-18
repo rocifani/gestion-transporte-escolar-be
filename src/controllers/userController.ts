@@ -22,7 +22,7 @@ class UserController {
             if (user) {
                 sendSuccess(res, user);
             } else {
-                sendError(res, "User not found", 404);
+                sendError(res, "Usuario no encontrado", 404);
             }
         } catch (error: any) {
             sendError(res, error.message);
@@ -35,9 +35,12 @@ class UserController {
             const password= req.body.password;
             const user = await userService.login(mail, password);
             if(user){
-                const token: string = jwt.sign({_id: user.id, role_id: req.params['role_id']}, process.env.SECRET_TOKEN || 'tokentest', {expiresIn: '1h'});
-                res.header('auth-token', token);
-                return res.json({
+                const token: string = jwt.sign(
+                    { _id: user.id, role_id: user.role_id },
+                    process.env.SECRET_TOKEN || 'tokentest',
+                    { expiresIn: '1h' }
+                );
+                res.json({
                     token,
                     user: {
                         id: user.id,
@@ -45,9 +48,7 @@ class UserController {
                         email: user.email,
                         role_id: user.role_id
                     }
-                })
-                return sendSuccess(res, user);
-                
+                })                
             }
             else{
                 sendError(res, "El mail y/o la contraseña son incorrectos.", 404);
@@ -79,18 +80,26 @@ class UserController {
                 return sendError(res, "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número", 400);
             }
             
-            const token: string = jwt.sign({_id: req.params['id'], role_id: req.params['role_id']}, process.env.SECRET_TOKEN || 'tokentest'); 
-
             const user = await userService.signup(data);
+            const token: string = jwt.sign(
+                { _id: user?.id, role_id: user?.role_id },
+                process.env.SECRET_TOKEN || 'tokentest',
+                { expiresIn: '1h' }
+            );
             if(user){
-                res.header('auth-token', token);
-                sendSuccess(res, user);
+                res.json({
+                    token,
+                    user: {
+                        id: user.id,
+                        full_name: user.full_name,
+                        email: user.email,
+                        role_id: user.role_id
+                    }
+                })    
             } else {
                 sendError(res, "No se pudo crear el usuario", 500);
             }
         } catch (error: any) {
-            console.log(res);
-            console.log(error.message);
             sendError(res, error.message);
         }
     }
