@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { Trip } from "./trip";
 import bcrypt from "bcrypt";
+import { Trip } from "./trip";
 
 @Entity('user')
 export class User {
