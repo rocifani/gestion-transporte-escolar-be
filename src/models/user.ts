@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column} from "typeorm";
-import * as bcrypt from "bcryptjs";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Trip } from "./trip";
+import bcrypt from "bcrypt";
 
-@Entity("users") // Nombre de la tabla en MySQL
+@Entity('user')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -39,10 +40,11 @@ export class User {
   @Column({ type: "date", nullable: true })
   birth_date?: string;
 
-  
-  async encryptPassword(password: string): Promise<string> {
+  @OneToMany(() => Trip, (trip) => trip.user)
+    trips: Trip[];
+
+async encryptPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(password, salt);
-  }
-
+    }
 }

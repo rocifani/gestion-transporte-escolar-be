@@ -1,60 +1,65 @@
 import db from "../database/db";
-import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { User } from "../models/user";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 
 class UserService {
 
     async getAllUsers(): Promise<User[]> {
-        const users = await db.query<RowDataPacket[]>("SELECT * FROM user");
-        return users as User[];
+        const userRepository = db.getRepository(User);
+        return await userRepository.find();  // Usamos find() para obtener todos los usuarios
     }
 
     async getUserById(id: number): Promise<User | undefined> {
-        const user = await db.query<RowDataPacket[]>("SELECT * FROM user WHERE id = ?", id);
-        if(Array.isArray(user) && user.length > 0){
-            return user[0] as User;
-        }
-        return undefined;
+        const userRepository = db.getRepository(User);  // Use getRepository from dataSource
+        const user = await userRepository.findOne({ where: { id } });  // Usamos findOne() para obtener un usuario por su id
+        return user ?? undefined;
     }
 
     async login(email: string, password: string): Promise<User | undefined> {
-        const user = await db.query<RowDataPacket[]>("SELECT * FROM user WHERE email = ?", email);
-        if(user.length > 0){
-            const passMatch = await bcrypt.compare(password, user[0].password);
-            if(passMatch){
-                return user[0] as User;
-            }
+        const userRepository = db.getRepository(User);  // Use getRepository from dataSource
+        const user = await userRepository.findOne({ where: { email } });  // Buscar usuario por email
+        if (user && await bcrypt.compare(password, user.password)) {
+            return user;
         }
         return undefined;
     }
 
-    async signup(data: User): Promise<User | undefined> {  
-        const userInstance = new User();
-        data.password = await userInstance.encryptPassword(data.password);
-        const result = await db.query<ResultSetHeader>("INSERT INTO user SET ?", data);
-    
-        if (result.insertId) {
-            return await this.getUserById(result.insertId);
-        }
-    
-        return undefined;
+    async signup(data: User): Promise<User | undefined> {
+        const userRepository = db.getRepository(User);  // Use getRepository from dataSource
+        // Encriptar contraseña antes de guardar
+        data.password = await bcrypt.hash(data.password, 10);  
+        const result = await userRepository.save(data);  // Usamos save() para insertar el usuario
+
+        return result ? result : undefined;  // Si la inserción fue exitosa, retorna el nuevo usuario
     }
 
     async getUserByEmail(email: string): Promise<User | undefined> {
-        const user = await db.query<RowDataPacket[]>("SELECT * FROM user WHERE email = ?", email);
-        if(Array.isArray(user) && user.length > 0){
-            return user[0] as User;
-        }
-        return undefined;
+        const userRepository = db.getRepository(User);  // Use getRepository from dataSource
+        const user = await userRepository.findOne({ where: { email } });  // Buscar por email
+        return user ?? undefined;
     }
 
     async putUser(id: number, data: User): Promise<User | undefined> {
-        const result = await db.query<ResultSetHeader>("UPDATE user SET ? WHERE id = ?", [data, id]);
-        if(result.affectedRows){
-            return await this.getUserById(id);
+        const userRepository = db.getRepository(User);  // Use getRepository from dataSource
+        const user = await userRepository.findOne({ where: { id } });
+
+        if (user) {
+            // Actualizamos la información del usuario
+            user.email = data.email || user.email;
+            user.password = data.password ? await bcrypt.hash(data.password, 10) : user.password;
+            user.full_name = data.full_name || user.full_name;
+            user.phone_number = data.phone_number || user.phone_number;
+            user.address = data.address || user.address;
+            user.updated_at = new Date().toISOString();  // Encriptar nueva contraseña si se proporciona
+            user.profile_picture = data.profile_picture || user.profile_picture;
+            user.birth_date = data.birth_date || user.birth_date;
+
+            // Guardar cambios
+            await userRepository.save(user);
+            return user;
         }
-        return undefined;
+
+        return undefined;  // Si el usuario no existe, retorna undefined
     }
 
     
