@@ -7,7 +7,7 @@ const userRouter = Router();
 userRouter.get("/", userController.getAllUsers)
 userRouter.get("/profile", TokenValidation, userController.getUserById)
 userRouter.post("/signup", userController.signup)
-userRouter.put("/:id", userController.putUser)
+userRouter.put("/update", TokenValidation, userController.putUser)
 userRouter.post("/login", userController.login)
 
 export default userRouter;

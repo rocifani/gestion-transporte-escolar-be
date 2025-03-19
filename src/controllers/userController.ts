@@ -104,11 +104,9 @@ class UserController {
         }
     }
 
-
-
     async putUser(req: Request, res: Response){
         try{
-            const id = Number(req.params['id']);
+            const id = Number(req.userId);
             const data = req.body;
             const user = await userService.putUser(id, data);
             if (user) {
