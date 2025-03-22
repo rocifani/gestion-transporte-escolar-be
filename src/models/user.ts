@@ -40,6 +40,9 @@ export class User {
   @Column({ type: "date", nullable: true })
   birth_date?: string;
 
+  @Column({type: "boolean", default: false})
+  is_confirmed: boolean;
+
   @OneToMany(() => Trip, (trip) => trip.user)
     trips: Trip[];
 

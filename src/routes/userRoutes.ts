@@ -9,5 +9,6 @@ userRouter.get("/profile", TokenValidation, userController.getUserById)
 userRouter.post("/signup", userController.signup)
 userRouter.put("/:id", userController.putUser)
 userRouter.post("/login", userController.login)
+userRouter.get("/confirm-email/:token", userController.confirmEmail)
 
 export default userRouter;

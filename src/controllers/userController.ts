@@ -3,6 +3,7 @@ import userService from '../services/userService';
 import { sendError, sendSuccess } from '../utils/requestHandlers';
 import jwt from 'jsonwebtoken';
 import { isValidEmail, isValidPassword } from '../utils/validators';
+import { sendConfirmationEmail } from '../services/mailService';
 
 class UserController {
 
@@ -81,12 +82,13 @@ class UserController {
             }
             
             const user = await userService.signup(data);
-            const token: string = jwt.sign(
-                { _id: user?.id, role_id: user?.role_id },
-                process.env.SECRET_TOKEN || 'tokentest',
-                { expiresIn: '1h' }
-            );
             if(user){
+                const token: string = jwt.sign(
+                    { _id: user.id, role_id: user.role_id },
+                    process.env.SECRET_TOKEN || 'tokentest',
+                    { expiresIn: '1h' }
+                );
+                sendConfirmationEmail(user.email, token);
                 res.json({
                     token,
                     user: {
@@ -104,7 +106,33 @@ class UserController {
         }
     }
 
-
+    async confirmEmail(req: Request, res: Response) {
+        try {
+            const { token } = req.params;
+    
+            if (!token) {
+                return sendError(res, "Token inválido", 400);
+            }
+    
+            const decoded: any = jwt.verify(token, process.env.SECRET_TOKEN || 'tokentest');
+    
+            const user = await userService.getUserById(decoded._id);
+            if (!user) {
+                return sendError(res, "Usuario no encontrado", 404);
+            }
+    
+            if (user.is_confirmed) {
+                return sendError(res, "El usuario ya ha sido confirmado", 400);
+            }
+    
+            await userService.confirmUser(decoded._id);
+    
+            sendSuccess(res, "Cuenta confirmada exitosamente");
+        } catch (error: any) {
+            sendError(res, "Token inválido o expirado", 400);
+        }
+    }
+    
 
     async putUser(req: Request, res: Response){
         try{

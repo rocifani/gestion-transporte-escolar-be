@@ -24,6 +24,19 @@ class UserService {
         return undefined;
     }
 
+    async confirmUser(id: number): Promise<User | undefined> {
+        const userRepository = db.getRepository(User);
+        const user = await userRepository.findOne({ where: { id } });
+    
+        if (user) {
+            user.is_confirmed = true;
+            await userRepository.save(user);
+            return user;
+        }
+    
+        return undefined;
+    }    
+
     async signup(data: User): Promise<User | undefined> {
         const userRepository = db.getRepository(User);  
 
