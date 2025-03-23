@@ -6,6 +6,12 @@ class TripService {
     async getAllTrips(): Promise<Trip[]> {
         const tripRepository = db.getRepository(Trip);  
         return await tripRepository.find();  
+    } 
+
+    async getTripByUser(id: number): Promise<Trip | null> {
+        const tripRepository = db.getRepository(Trip); 
+        return await tripRepository.createQueryBuilder("trips").
+        where("trips.userId = :user_id", { user_id: id }).getOne();
     }
 
     async getTripById(trip_id: number): Promise<Trip | undefined> {
@@ -31,7 +37,6 @@ class TripService {
             trip.school = data.school || trip.school;
             trip.date = data.date || trip.date;
             trip.status = data.status || trip.status;
-            trip.updated_at = new Date(); 
           
             await tripRepository.save(trip);
             return trip;

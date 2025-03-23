@@ -63,7 +63,6 @@ class UserService {
             user.full_name = data.full_name || user.full_name;
             user.phone_number = data.phone_number || user.phone_number;
             user.address = data.address || user.address;
-            user.updated_at = new Date().toISOString();  
             user.profile_picture = data.profile_picture || user.profile_picture;
             user.birth_date = data.birth_date || user.birth_date;
 

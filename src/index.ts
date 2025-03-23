@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import { AppDataSource } from "./database/db";
+import AppDataSource from "./database/db";
 import routes from "./routes/routes";
 import cors from 'cors';
 

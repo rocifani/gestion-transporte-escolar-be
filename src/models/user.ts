@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne } from "typeorm";
 import bcrypt from "bcrypt";
 import { Trip } from "./trip";
+import { Vehicle } from "./vehicle";
 
 @Entity('user')
 export class User {
@@ -28,12 +29,6 @@ export class User {
   @Column({ nullable: true })
   address?: string;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  created_at: string;
-
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
-  updated_at: string;
-
   @Column({ nullable: true })
   profile_picture?: string;
 
@@ -45,6 +40,15 @@ export class User {
 
   @OneToMany(() => Trip, (trip) => trip.user)
     trips: Trip[];
+
+  @OneToOne(() => Vehicle, (vehicle) => vehicle.user)
+  vehicle: Vehicle;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  created_at: string;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
+  updated_at: string;
 
 async encryptPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(10);

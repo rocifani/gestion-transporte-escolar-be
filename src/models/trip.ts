@@ -3,10 +3,9 @@ import {
     PrimaryGeneratedColumn,
     Column,
     ManyToOne,
-    CreateDateColumn,
-    UpdateDateColumn,
   } from "typeorm";
   import { User } from "./user";
+import { Vehicle } from "./vehicle";
   
   @Entity('trip')
   export class Trip {
@@ -21,14 +20,20 @@ import {
   
     @Column({ type: "date", nullable: true })
     date?: string;
+
+    @Column({ type: "time", nullable: true })
+    time?: string;
   
     @Column({ type: "enum", enum: ["pending", "completed", "cancelled"], default: "pending" })
     status?: "pending" | "completed" | "cancelled";
+
+    @ManyToOne(() => Vehicle, (vehicle) => vehicle.trips)
+    vehicle: Vehicle;
   
-    @CreateDateColumn()
-    created_at?: Date;
-  
-    @UpdateDateColumn()
-    updated_at?: Date;
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    created_at: string;
+
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
+    updated_at: string;
   }
   

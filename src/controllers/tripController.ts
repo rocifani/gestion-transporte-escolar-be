@@ -63,6 +63,20 @@ class TripController {
         }
     }
 
+    async getTripByUser(req: Request, res: Response) {
+        try {
+            const userId = Number(req.userId); 
+            if (!userId) {
+                return sendError(res, "Acceso denegado", 401); 
+            }
+            const trip = await tripService.getTripByUser(userId);
+            return sendSuccess(res, trip); 
+        } 
+        catch (error: any) {
+            return sendError(res, error.message); 
+        }
+    }
+
 
 }
 
