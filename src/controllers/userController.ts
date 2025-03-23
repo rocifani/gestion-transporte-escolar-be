@@ -124,6 +124,9 @@ class UserController {
             if (user.is_confirmed) {
                 return sendError(res, "El usuario ya ha sido confirmado", 400);
             }
+            else {
+                await userService.confirmUser(decoded._id);
+            }
     
             await userService.confirmUser(decoded._id);
     
