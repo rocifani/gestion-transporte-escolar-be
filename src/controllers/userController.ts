@@ -3,7 +3,7 @@ import userService from '../services/userService';
 import { sendError, sendSuccess } from '../utils/requestHandlers';
 import jwt from 'jsonwebtoken';
 import { isValidEmail, isValidPassword } from '../utils/validators';
-import { sendConfirmationEmail } from '../services/mailService';
+import { sendConfirmationEmail, sendForgotPasswordEmail } from '../services/mailService';
 
 class UserController {
 
@@ -149,6 +149,52 @@ class UserController {
             }
         } catch (error: any) {
             sendError(res, error.message);
+        }
+    }
+
+    async forgotPassword(req: Request, res: Response){
+        try{
+            const email = req.body.email;
+            const user = await userService.getUserByEmail(email);
+            if (!user) {
+                return sendError(res, "Usuario no encontrado", 404);
+            }
+            else{
+                const token: string = jwt.sign(
+                    { _id: user.id, role_id: user.role_id },
+                    process.env.SECRET_TOKEN || 'tokentest',
+                    { expiresIn: '1h' }
+                );
+                sendForgotPasswordEmail(user.email, token);
+                sendSuccess(res, "Email enviado exitosamente");
+            }
+        } catch (error: any) {
+            sendError(res, error.message);
+        }
+    }
+
+    async resetPassword(req: Request, res: Response){
+        try{
+            const { token } = req.params;
+            const { password } = req.body;
+    
+            if (!token) {
+                return sendError(res, "Token inválido", 400);
+            }
+    
+            const decoded: any = jwt.verify(token, process.env.SECRET_TOKEN || 'tokentest');
+    
+            const user = await userService.getUserById(decoded._id);
+            if (!user) {
+                return sendError(res, "Usuario no encontrado", 404);
+            }
+    
+            user.password = password;
+            await userService.putUser(decoded._id, user);
+    
+            sendSuccess(res, "Contraseña actualizada exitosamente");
+        } catch (error: any) {
+            sendError(res, "Token inválido o expirado", 400);
         }
     }
 }

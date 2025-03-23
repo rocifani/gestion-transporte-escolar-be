@@ -74,8 +74,11 @@ class UserService {
         return undefined;  
     }
 
-    
-
+    async forgotPassword(email: string): Promise<User | undefined> {
+        const userRepository = db.getRepository(User); 
+        const user = await userRepository.findOne({ where: { email } }); 
+        return user ?? undefined;
+    }
     // TO DO: implementar delete. No se si hacer un borrado definitivo o un borrado lógico.
 
 }
