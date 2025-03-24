@@ -197,6 +197,41 @@ class UserController {
             sendError(res, "Token inválido o expirado", 400);
         }
     }
+
+    async loginWithGoogle(req: Request, res: Response){
+        try{
+            const email = req.body.email;
+            const data = req.body;
+
+            let user = await userService.getUserByEmail(email);
+
+            if (!user) {          
+                user = await userService.signUpWithGoogle(data);
+            }
+            else{
+                const token: string = jwt.sign(
+                    { _id: user.id, role_id: user.role_id },
+                    process.env.SECRET_TOKEN || 'tokentest',
+                    { expiresIn: '1h' }
+                );
+                res.json({
+                    token,
+                    user: {
+                        id: user.id,
+                        full_name: user.full_name,
+                        email: user.email,
+                        role_id: user.role_id,
+                        photo_picture: user.profile_picture,
+                        phone_number: user.phone_number,
+                        birth_date: user.birth_date,
+                        is_confirmed: user.is_confirmed
+                    }
+                })
+            }
+        } catch (error: any) {
+            sendError(res, error.message);
+        }
+    }
 }
 
 export default new UserController();

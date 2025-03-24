@@ -12,5 +12,6 @@ userRouter.post("/login", userController.login)
 userRouter.get("/confirm-email/:token", userController.confirmEmail)
 userRouter.post("/forgot-password", userController.forgotPassword)
 userRouter.post("/reset-password/:token", userController.resetPassword)
+userRouter.post("/signup-google", userController.loginWithGoogle)
 
 export default userRouter;

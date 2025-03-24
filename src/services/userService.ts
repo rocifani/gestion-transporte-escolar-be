@@ -46,6 +46,12 @@ class UserService {
         return result ? result : undefined;  
     }
 
+    async signUpWithGoogle(data: User): Promise<User | undefined> {
+        const userRepository = db.getRepository(User);  
+        const result = await userRepository.save(data);  
+        return result ? result : undefined;
+    }
+
     async getUserByEmail(email: string): Promise<User | undefined> {
         const userRepository = db.getRepository(User); 
         const user = await userRepository.findOne({ where: { email } }); 
@@ -65,6 +71,7 @@ class UserService {
             user.address = data.address || user.address;
             user.profile_picture = data.profile_picture || user.profile_picture;
             user.birth_date = data.birth_date || user.birth_date;
+            user.role_id = data.role_id || user.role_id;
 
             await userRepository.save(user);
             return user;
