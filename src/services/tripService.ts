@@ -8,10 +8,11 @@ class TripService {
         return await tripRepository.find();  
     } 
 
-    async getTripByUser(id: number): Promise<Trip | null> {
-        const tripRepository = db.getRepository(Trip); 
-        return await tripRepository.createQueryBuilder("trips").
-        where("trips.userId = :user_id", { user_id: id }).getOne();
+    async getTripByUser(id: number): Promise<Trip[]> {
+        const vehicleRepository = db.getRepository(Trip); 
+        return await vehicleRepository.createQueryBuilder("trips")
+            .where("trips.userId = :user_id", { user_id: id })
+            .getMany();  
     }
 
     async getTripById(trip_id: number): Promise<Trip | undefined> {

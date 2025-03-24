@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne } from "typ
 import bcrypt from "bcrypt";
 import { Trip } from "./trip";
 import { Vehicle } from "./vehicle";
+import { Child } from "./child";
 
 @Entity('user')
 export class User {
@@ -43,6 +44,9 @@ export class User {
 
   @OneToOne(() => Vehicle, (vehicle) => vehicle.user)
   vehicle: Vehicle;
+
+  @OneToMany(() => Child, (child) => child.user)
+  children: Child[];
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: string;
