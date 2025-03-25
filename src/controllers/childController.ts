@@ -78,6 +78,22 @@ class ChildController {
         }
     }
 
+    async deleteChild(req: Request, res: Response){
+        try{
+            const id = Number(req.params['id']);
+            const deleted = await childService.deleteChild(id);
+            if(deleted){
+                sendSuccess(res, "Alumno eliminado correctamente");
+            }
+            else{
+                sendError(res, "Alumno no encontrado", 404); 
+            }
+        }
+        catch(error: any){
+            sendError(res, error.message);
+        }
+    }
+
 
 }
 
