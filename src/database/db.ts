@@ -1,29 +1,19 @@
-import mysql, { ConnectionOptions, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { DataSource } from "typeorm";
+import dotenv from "dotenv";
 
-const config: ConnectionOptions = {
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'db_gestion_transporte',
-    connectionLimit: 10,
-    waitForConnections: true,
-    queueLimit: 0,
-}
+dotenv.config();
 
-const pool = mysql.createPool(config);
+const AppDataSource = new DataSource({
+  type: "mysql",
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  username: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  entities: ["src/models/*.ts"],
+  migrations: ["src/migrations/*.ts"],
+  synchronize: false,
+  logging: true,
+});
 
-class Database {
-    async query<T extends RowDataPacket[] | ResultSetHeader> (query: string, values: any = null) {
-        const connection = await pool.getConnection();
-        try {
-            const [rows] = await connection.query(query, values);
-            return rows as T;
-        } catch (error) {
-            throw error;
-        } finally {
-            connection.release();
-        }
-    }
-}
-
-export default new Database();
+export default AppDataSource;

@@ -1,23 +1,25 @@
 import express from "express";
-import cors from "cors";
-import db from "./database/db";
+import dotenv from "dotenv";
+import AppDataSource from "./database/db";
 import routes from "./routes/routes";
+import cors from 'cors';
+
+dotenv.config();
+
 
 const app = express();
-app.use(cors({origin: "*"}));
 app.use(express.json());
+app.use(cors());
+app.use("/", routes);
 
 const PORT = process.env.PORT || 3000;
 
+AppDataSource.initialize()
+  .then(() => {
+    console.log("Database connected!");
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((error) => console.error(error));
 
-
-app.get("/", async (_req, res) => { // TO DO: cambiar esto
-  const results = await db.query("SELECT * FROM role");
-  res.json(results);
-});
-
-app.use('/', routes);
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
