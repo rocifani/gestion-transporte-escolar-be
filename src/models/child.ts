@@ -20,4 +20,13 @@ export class Child {
 
   @ManyToOne(() => User, (user) => user.children)
   user: User;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    created_at: string;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
+  updated_at: string;
+
+  @Column({ type: "timestamp", nullable: true })
+  deleted_at?: string;
 }
