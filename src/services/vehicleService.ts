@@ -5,7 +5,7 @@ class VehicleService {
 
     async getAllVehicles(): Promise<Vehicle[]> {
         const vehicleRepository = db.getRepository(Vehicle);  
-        return await vehicleRepository.find();  
+        return await vehicleRepository.find(); 
     }
 
     async getVehicleById(vehicle_id: number): Promise<Vehicle | undefined> {
