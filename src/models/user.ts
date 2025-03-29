@@ -1,7 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import bcrypt from "bcrypt";
 import { Trip } from "./trip";
-import { Vehicle } from "./vehicle";
+import { Authorization } from "./authorization";
 import { Child } from "./child";
 
 @Entity('user')
@@ -42,8 +42,8 @@ export class User {
   @OneToMany(() => Trip, (trip) => trip.user)
     trips: Trip[];
 
-  @OneToOne(() => Vehicle, (vehicle) => vehicle.user)
-  vehicle: Vehicle;
+  @OneToMany(()=> Authorization, (authorization)=> authorization.user)
+  authorizations: Authorization[];
 
   @OneToMany(() => Child, (child) => child.user)
   children: Child[];

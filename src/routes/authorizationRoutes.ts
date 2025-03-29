@@ -1,0 +1,14 @@
+import { Router } from "express";
+import authorizationController from "../controllers/authorizationController";
+import TokenValidation from "../utils/verifyToken";
+
+const authorizationRouter = Router();
+
+authorizationRouter.get("/", TokenValidation, authorizationController.getAuthorizationByUser)
+authorizationRouter.post("/", TokenValidation, authorizationController.postAuthorization)
+authorizationRouter.put("/", TokenValidation, authorizationController.putAuthorization)
+authorizationRouter.get("/all", TokenValidation, authorizationController.getAllAuthorizations)
+
+authorizationRouter.get("/:id", TokenValidation, authorizationController.getAuthorizationById)
+
+export default authorizationRouter;
