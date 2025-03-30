@@ -38,6 +38,9 @@ class AuthorizationService {
             authorization.vehicle_license_plate = data.vehicle_license_plate;
             authorization.vehicle_capacity = data.vehicle_capacity;
             authorization.vehicle_authorization_pdf = data.vehicle_authorization_pdf;
+            authorization.driver_authorization_pdf = data.driver_authorization_pdf;
+            authorization.due_date_vehicle = data.due_date_vehicle;
+            authorization.due_date_driver = data.due_date_driver;
           
             await authorizationRepository.save(authorization);
             return authorization;

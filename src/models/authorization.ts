@@ -46,6 +46,12 @@ export class Authorization {
   @Column({ nullable: true })
   driver_authorization_pdf?: string;
 
+  @Column({ type: "date"})
+  due_date_vehicle: string;
+
+  @Column({ type: "date"})
+  due_date_driver: string;
+
   @ManyToOne(() => User, (user) => user.authorizations)
   @JoinColumn({ name: "user_id" })
   user: User;

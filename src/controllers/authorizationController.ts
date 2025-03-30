@@ -33,7 +33,6 @@ class AuthorizationController {
     async postAuthorization(req: Request, res: Response){
         try{
             const data = req.body; // TO DO: validar datos del body en el back
-            console.log("userId", req.userId);
             data.user = Number(req.userId); 
             const authorization = await authorizationService.postAuthorization(data);
             if(authorization){
