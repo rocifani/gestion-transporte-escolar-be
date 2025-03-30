@@ -4,6 +4,8 @@ export class ChangeVehicleForAuthorization1743259716531 implements MigrationInte
     name = 'ChangeVehicleForAuthorization1743259716531'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE \`trip\` DROP FOREIGN KEY \`FK_6c59d04eef7fda34af6fc48172a\``);
+        await queryRunner.query(`ALTER TABLE \`trip\` DROP FOREIGN KEY \`FK_f89812be41bd7d29f98d43445ee\``);
         await queryRunner.query(`DROP INDEX \`FK_6c59d04eef7fda34af6fc48172a\` ON \`trip\``);
         await queryRunner.query(`DROP INDEX \`FK_f89812be41bd7d29f98d43445ee\` ON \`trip\``);
         await queryRunner.query(`ALTER TABLE \`trip\` CHANGE \`vehicleVehicleId\` \`vehicleAuthorizationId\` int NULL`);
@@ -15,6 +17,8 @@ export class ChangeVehicleForAuthorization1743259716531 implements MigrationInte
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE \`trip\` DROP FOREIGN KEY \`FK_6c59d04eef7fda34af6fc48172a\``);
+        await queryRunner.query(`ALTER TABLE \`trip\` DROP FOREIGN KEY \`FK_f89812be41bd7d29f98d43445ee\``);
         await queryRunner.query(`ALTER TABLE \`trip\` DROP FOREIGN KEY \`FK_0f77158353b2a70121516f6d48a\``);
         await queryRunner.query(`ALTER TABLE \`trip\` DROP FOREIGN KEY \`FK_f89812be41bd7d29f98d43445ee\``);
         await queryRunner.query(`ALTER TABLE \`authorization\` DROP FOREIGN KEY \`FK_e23b6a20b3634c634bef6400069\``);
