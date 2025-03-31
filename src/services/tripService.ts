@@ -9,8 +9,8 @@ class TripService {
     } 
 
     async getTripByUser(id: number): Promise<Trip[]> {
-        const vehicleRepository = db.getRepository(Trip); 
-        return await vehicleRepository.createQueryBuilder("trips")
+        const tripRepository = db.getRepository(Trip); 
+        return await tripRepository.createQueryBuilder("trips")
             .where("trips.userId = :user_id", { user_id: id })
             .getMany();  
     }

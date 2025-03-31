@@ -1,11 +1,6 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-  } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
   import { User } from "./user";
-import { Vehicle } from "./vehicle";
+import { Authorization } from "./authorization";
   
   @Entity('trip')
   export class Trip {
@@ -27,8 +22,8 @@ import { Vehicle } from "./vehicle";
     @Column({ type: "enum", enum: ["pending", "completed", "cancelled"], default: "pending" })
     status?: "pending" | "completed" | "cancelled";
 
-    @ManyToOne(() => Vehicle, (vehicle) => vehicle.trips)
-    vehicle: Vehicle;
+    @ManyToOne(() => Authorization, (authorization) => authorization.trips)
+    vehicle: Authorization;
   
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     created_at: string;
