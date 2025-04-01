@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { googlePlacesService } from "../services/mapsService";
+import mapsService from "../services/mapsService";
 import { sendError, sendSuccess } from '../utils/requestHandlers';
 
 class mapsController {
@@ -12,7 +12,7 @@ class mapsController {
         return sendError(res, "El parámetro 'query' es obligatorio", 400);
       }
 
-      const places = await googlePlacesService.searchPlaces(query as string, type as string);
+      const places = await mapsService.searchPlaces(query as string, type as string);
       sendSuccess(res, places);
     } catch (error: any) {
       sendError(res, error.message);
@@ -27,7 +27,7 @@ class mapsController {
         return sendError(res, "El parámetro 'place_id' es obligatorio", 400);
       }
 
-      const details = await googlePlacesService.getPlaceDetails(place_id as string);
+      const details = await mapsService.getPlaceDetails(place_id as string);
       sendSuccess(res, details);
     } catch (error: any) {
       sendError(res, error.message);
@@ -35,4 +35,4 @@ class mapsController {
   }
 }
 
-export const googlePlacesController = new mapsController();
+export default new mapsController();

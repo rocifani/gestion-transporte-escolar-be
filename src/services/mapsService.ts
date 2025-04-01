@@ -1,7 +1,4 @@
 import axios from "axios";
-// import dotenv from "dotenv";
-
-// dotenv.config();
 
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
@@ -13,6 +10,7 @@ class mapsService {
         params: {
           query,
           type,
+          language: "es", 
           key: GOOGLE_MAPS_API_KEY,
         },
       });
@@ -48,4 +46,4 @@ class mapsService {
   }
 }
 
-export const googlePlacesService = new mapsService();
+export default new mapsService();

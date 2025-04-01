@@ -1,9 +1,9 @@
 import express from "express";
-import { googlePlacesController } from "../controllers/mapsController";
+import mapsController from "../controllers/mapsController";
 
 const router = express.Router();
 
-router.get("/places", googlePlacesController.searchPlaces);
-router.get("/place-details", googlePlacesController.getPlaceDetails);
+router.get("/places", mapsController.searchPlaces);
+router.get("/place-details", mapsController.getPlaceDetails);
 
 export default router;
