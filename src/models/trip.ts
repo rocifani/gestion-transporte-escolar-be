@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
   import { User } from "./user";
 import { Authorization } from "./authorization";
+import { Child } from "./child";
   
   @Entity('trip')
   export class Trip {
@@ -24,6 +25,9 @@ import { Authorization } from "./authorization";
 
     @ManyToOne(() => Authorization, (authorization) => authorization.trips)
     vehicle: Authorization;
+
+    @ManyToOne(() => Child, (child) => child.trip)
+    children: Child;
   
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     created_at: string;

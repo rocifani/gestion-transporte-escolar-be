@@ -5,6 +5,7 @@ import authorizationRoutes from "./authorizationRoutes";
 import childRoutes from "./childRoutes";
 import mapsRoutes from "./mapsRoutes";
 import filesRoutes from "./filesRoutes";
+import paymentRoutes from "./paymentRoutes";
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use("/authorization", authorizationRoutes);
 router.use("/child", childRoutes);
 router.use("/maps", mapsRoutes);
 router.use("/files", filesRoutes);
+router.use("/payment", paymentRoutes);
 
 export default router;

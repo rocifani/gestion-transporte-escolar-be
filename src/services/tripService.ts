@@ -1,5 +1,8 @@
+import { User } from "../models/user";
 import db from "../database/db";
 import { Trip } from "../models/trip";
+import { Child } from "../models/child";
+import { Authorization } from "../models/authorization";
 
 class TripService {
 
@@ -44,6 +47,25 @@ class TripService {
         }
 
         return undefined;  
+    }
+
+    async postTripByUserEmail(id: number, child_id: number, authorization_id: number): Promise<Trip | undefined> {
+        const userRepository = db.getRepository(User);  
+        const user = await userRepository.findOne({ where: { id } });  
+        const childRepository = db.getRepository(Child);
+        const child = await childRepository.findOne({ where: { child_id } });
+        const authorizationRepository = db.getRepository(Authorization);
+        const authorization = await authorizationRepository.findOne({ where: { authorization_id } });
+        const trip = new Trip();
+        trip.user = user as User;
+        trip.school = child?.school || "";
+        trip.status = "pending";
+        trip.vehicle = authorization as Authorization;
+        trip.children = child as Child;
+        const tripRepository = db.getRepository(Trip);  
+        const result = await tripRepository.save(trip); 
+        return result ? result : undefined;
+
     }
 
     

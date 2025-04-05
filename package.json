@@ -42,6 +42,8 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "@ngrok/ngrok": "^1.4.1",
+    "@types/mercadopago-sdk-js": "^2.0.17",
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.6.0",
@@ -49,12 +51,16 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "mercadopago": "^2.3.0",
     "multer": "^1.4.5-lts.2",
     "mysql2": "^3.13.0",
+    "ngrok": "^5.0.0-beta.2",
+    "node-fetch": "^3.3.2",
     "nodemailer": "^6.10.0",
     "reflect-metadata": "^0.2.2",
     "streamifier": "^0.1.1",
-    "typeorm": "^0.3.21"
+    "typeorm": "^0.3.21",
+    "uuid": "^11.1.0"
   },
   "eslintConfig": {
     "extends": "../node_modules/ts-standard/eslintrc.json",
