@@ -44,6 +44,42 @@ class mapsService {
       throw new Error("Error en la API de Google Place Details: " + error.message);
     }
   }
+
+  async geocodeAddress(address: string) {
+    try {
+      const response = await axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
+        params: {
+          address,
+          key: GOOGLE_MAPS_API_KEY,
+        },
+      });
+    
+      const location = response.data.results[0].geometry.location;
+    
+      return {
+        address: response.data.results[0].formatted_address,
+        lat: location.lat,
+        lng: location.lng,
+      };
+    } catch (error: any) {
+      throw new Error("Error en la API de Google Geocoding: " + error.message);
+    }
+  }
+
+  async geocodeAddresses(direcciones: string[]) {
+    const resultados: { address: string; lat: number; lng: number }[] = [];
+  
+    for (const direccion of direcciones) {
+      try {
+        const coordenada = await this.geocodeAddress(direccion);
+        resultados.push(coordenada);
+      } catch (error: any) {
+        throw new Error("Error: " + error.message);
+      }
+    }
+  
+    return resultados;
+  };
 }
 
 export default new mapsService();

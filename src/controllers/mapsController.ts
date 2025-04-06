@@ -33,6 +33,45 @@ class mapsController {
       sendError(res, error.message);
     }
   }
+
+  async geocodeAddress(req: Request, res: Response) {
+    try {
+      const { address } = req.query;
+
+      if (!address) {
+        return sendError(res, "El parámetro 'address' es obligatorio", 400);
+      }
+
+      const location = await mapsService.geocodeAddress(address as string);
+      sendSuccess(res, location);
+    } catch (error: any) {
+      sendError(res, error.message);
+    }
+  }
+
+  async geocodeAddresses(_req: Request, res: Response) {
+    try {
+      // query para obtener direcciones del viaje
+      // const addresses = await (); 
+
+      // const { addresses } = req.body;
+
+      const addresses =  [
+        "Av. Corrientes 1234, CABA",
+        "Av. Santa Fe 2000, CABA",
+        "Av. Libertador 5000, CABA",
+      ];
+
+      if (!addresses || !Array.isArray(addresses)) {
+        return sendError(res, "No se está recibiendo un array", 400);
+      }
+
+      const locations = await mapsService.geocodeAddresses(addresses as string[]);
+      sendSuccess(res, locations);
+    } catch (error: any) {
+      sendError(res, error.message);
+    }
+  }
 }
 
 export default new mapsController();

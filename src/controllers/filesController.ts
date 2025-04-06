@@ -30,17 +30,13 @@ class FilesController {
             .digest('hex');
     };
 
-    getUploadSignature = async (req: Request, res: Response) => {
+    getUploadSignature = async (_req: Request, res: Response) => {
         try {
             const timestamp = Math.round(new Date().getTime() / 1000);
 
             try {
                 const signature = this.generateSignature({ timestamp: timestamp.toString(), folder: "uploads" });
                 console.log("Firma generada:", signature);
-
-                // NOTA: no se deberia usar req (porque no trae nada), pero si lo dejas sin usar, da error, y si lo borras response actua como req. 
-                // Conclusion: dejar este console log
-                console.log("Tipo de req:", typeof req)
 
                 return sendSuccess(res, {
                     signature,
