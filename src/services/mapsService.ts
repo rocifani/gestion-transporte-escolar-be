@@ -80,6 +80,45 @@ class mapsService {
   
     return resultados;
   };
+
+  async calculateRouteWithDurations(locations: { lat: number; lng: number; address: string }[]) {
+    try {
+      const response = await axios.get("https://maps.googleapis.com/maps/api/directions/json", {
+        params: {
+          origin: `${locations[0].lat},${locations[0].lng}`,
+          destination: `${locations[locations.length - 1].lat},${locations[locations.length - 1].lng}`,
+          waypoints: locations
+            .slice(1, -1)
+            .map(loc => `${loc.lat},${loc.lng}`)
+            .join("|"),
+          key: GOOGLE_MAPS_API_KEY,
+        },
+      });
+  
+      const legs = response.data.routes[0].legs;
+  
+      const totalDuration = legs.reduce((acc: any, leg: { duration: { value: any; }; }) => acc + leg.duration.value, 0);
+  
+      const tramoDurations = legs.map((leg: {
+        duration: { value: number; text: string };
+        steps: any[];
+      }, i: number) => ({
+        from: locations[i].address,
+        to: locations[i + 1].address,
+        duration: leg.duration.value,
+        durationText: leg.duration.text,
+        steps: leg.steps,
+      }));
+  
+      return {
+        totalDuration,
+        totalDurationText: `${Math.floor(totalDuration / 60)} minutos`,
+        legs: tramoDurations,
+      };
+    } catch (error: any) {
+      throw new Error("Error al calcular la ruta: " + error.message);
+    }
+  }
 }
 
 export default new mapsService();

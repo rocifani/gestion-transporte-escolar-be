@@ -54,8 +54,6 @@ class mapsController {
       // query para obtener direcciones del viaje
       // const addresses = await (); 
 
-      // const { addresses } = req.body;
-
       const addresses =  [
         "Av. Corrientes 1234, CABA",
         "Av. Santa Fe 2000, CABA",
@@ -67,7 +65,12 @@ class mapsController {
       }
 
       const locations = await mapsService.geocodeAddresses(addresses as string[]);
-      sendSuccess(res, locations);
+      const routeInfo = await mapsService.calculateRouteWithDurations(locations);
+
+      sendSuccess(res, {
+        locations,
+        routeSummary: routeInfo,
+      });
     } catch (error: any) {
       sendError(res, error.message);
     }
