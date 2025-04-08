@@ -7,8 +7,7 @@ const authorizationRouter = Router();
 authorizationRouter.get("/", TokenValidation, authorizationController.getAuthorizationByUser)
 authorizationRouter.post("/", TokenValidation, authorizationController.postAuthorization)
 authorizationRouter.put("/", TokenValidation, authorizationController.putAuthorization)
-authorizationRouter.get("/all", TokenValidation, authorizationController.getAllAuthorizations)
-
-authorizationRouter.get("/:id", TokenValidation, authorizationController.getAuthorizationById)
+authorizationRouter.get("/all", authorizationController.getAllAuthorizations)
+authorizationRouter.get("/:id", authorizationController.getAuthorizationById)
 
 export default authorizationRouter;
