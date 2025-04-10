@@ -40,6 +40,7 @@ class ChildService {
             child.age = data.age || child.age;
             child.school = data.school || child.school;
             child.user = child.user;
+            child.school_shift = data.school_shift || child.school_shift;
           
             await childRepository.save(child);
             return child;

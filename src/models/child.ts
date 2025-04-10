@@ -19,6 +19,9 @@ export class Child {
   @Column()
   school: string;
 
+  @Column()
+  school_shift: string; 
+
   @ManyToOne(() => User, (user) => user.children)
   user: User;
 
