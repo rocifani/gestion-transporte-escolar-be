@@ -49,9 +49,9 @@ class AuthorizationController {
 
     async putAuthorization(req: Request, res: Response){
         try{
-            const userId = Number(req.userId); 
-            const data = req.body; // TO DO: validar datos del body en el back
-            const authorization = await authorizationService.putAuthorization(userId, data);
+            const id = Number(req.params['id']); 
+            const data = req.body;
+            const authorization = await authorizationService.putAuthorization(id, data);
             if(authorization){
                 sendSuccess(res, authorization);
             }

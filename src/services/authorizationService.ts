@@ -21,9 +21,9 @@ class AuthorizationService {
         return result ? result : undefined; 
     }
 
-    async putAuthorization(id: number, data: Authorization): Promise<Authorization | undefined> {
+    async putAuthorization(authorization_id: number, data: Authorization): Promise<Authorization | undefined> {
         const authorizationRepository = db.getRepository(Authorization); 
-        const authorization = await authorizationRepository.createQueryBuilder("authorizations").where("authorizations.user_id = :user_id", { user_id: id }).getOne();
+        const authorization = await authorizationRepository.findOne({ where: { authorization_id } });
 
         if (authorization) {
             authorization.driver_name = data.driver_name;
@@ -41,6 +41,7 @@ class AuthorizationService {
             authorization.driver_authorization_pdf = data.driver_authorization_pdf;
             authorization.due_date_vehicle = data.due_date_vehicle;
             authorization.due_date_driver = data.due_date_driver;
+            authorization.state = data.state;
           
             await authorizationRepository.save(authorization);
             return authorization;

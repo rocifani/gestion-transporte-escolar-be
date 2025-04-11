@@ -2,7 +2,6 @@ import paymentService from "../services/paymentService";
 import { Request, Response } from "express";
 import { sendError, sendSuccess } from "../utils/requestHandlers";
 import axios from "axios";
-import tripService from "../services/tripService";
 
 class PaymentController{
 
@@ -34,10 +33,9 @@ async handleWebhook(req: Request, res: Response) {
           const payment = response.data;
 
           if (payment.status === 'approved') {
-              const { user_id, child_id, authorization_id } = payment.metadata;
-              const trip= await tripService.postTripByUserEmail(user_id, child_id, authorization_id);
+              //aca va meter hijo/s al trip child
 
-              return sendSuccess(res, { message: "Payment approved", trip });
+              // return sendSuccess(res, { message: "Payment approved", trip });
           }
       }
   } catch (err) {
