@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import bcrypt from "bcrypt";
-import { Trip } from "./trip";
 import { Authorization } from "./authorization";
 import { Child } from "./child";
 
@@ -38,9 +37,6 @@ export class User {
 
   @Column({type: "boolean", default: false})
   is_confirmed: boolean;
-
-  @OneToMany(() => Trip, (trip) => trip.user)
-    trips: Trip[];
 
   @OneToMany(()=> Authorization, (authorization)=> authorization.user)
   authorizations: Authorization[];

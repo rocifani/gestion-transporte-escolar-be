@@ -1,33 +1,26 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
-  import { User } from "./user";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany} from "typeorm";
 import { Authorization } from "./authorization";
-import { Child } from "./child";
-  
+import { TripChild } from "./trip_child";
+
   @Entity('trip')
   export class Trip {
     @PrimaryGeneratedColumn()
     trip_id: number;
   
-    @ManyToOne(() => User, (user) => user.trips)
-    user: User;
-  
-    @Column()
-    school: string;
-  
     @Column({ type: "date", nullable: true })
     date?: string;
 
-    @Column({ type: "time", nullable: true })
-    time?: string;
+    @Column()
+    available_capacity: number;
   
     @Column({ type: "enum", enum: ["pending", "completed", "cancelled"], default: "pending" })
     status?: "pending" | "completed" | "cancelled";
 
     @ManyToOne(() => Authorization, (authorization) => authorization.trips)
-    vehicle: Authorization;
+    authorization: Authorization;
 
-    @ManyToOne(() => Child, (child) => child.trip)
-    children: Child;
+    @OneToMany(() => TripChild, (trip_child) => trip_child.trip_id)
+    trip_child_id: TripChild;
   
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     created_at: string;

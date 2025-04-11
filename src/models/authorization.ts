@@ -52,11 +52,14 @@ export class Authorization {
   @Column({ type: "date"})
   due_date_driver: string;
 
+  @Column({})
+  state: number;
+
   @ManyToOne(() => User, (user) => user.authorizations)
   @JoinColumn({ name: "user_id" })
   user: User;
 
-  @OneToMany(()=> Trip, (trip)=> trip.vehicle)
+  @OneToMany(()=> Trip, (trip)=> trip.authorization)
   trips: Trip[];
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
