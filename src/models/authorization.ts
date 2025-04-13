@@ -10,6 +10,9 @@ export class Authorization {
   @Column()
   driver_name: string;
 
+  @Column()
+  dni: string;
+
   @Column({ nullable: true })
   address?: string;
 

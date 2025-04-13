@@ -42,6 +42,7 @@ class AuthorizationService {
             authorization.due_date_vehicle = data.due_date_vehicle;
             authorization.due_date_driver = data.due_date_driver;
             authorization.state = data.state;
+            authorization.dni = data.dni;
           
             await authorizationRepository.save(authorization);
             return authorization;

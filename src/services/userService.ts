@@ -72,6 +72,7 @@ class UserService {
             user.profile_picture = data.profile_picture || user.profile_picture;
             user.birth_date = data.birth_date || user.birth_date;
             user.role_id = data.role_id || user.role_id;
+            user.dni = data.dni || user.dni;
 
             await userRepository.save(user);
             return user;

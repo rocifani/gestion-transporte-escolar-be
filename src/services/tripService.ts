@@ -40,6 +40,20 @@ class TripService {
 
         return result ? result : undefined;
     }
+
+    async putTrip(trip_id: number, data: Partial<Trip>): Promise<Trip | undefined> {
+        const tripRepository = db.getRepository(Trip);  
+        const trip = await tripRepository.findOne({ where: { trip_id } });  
+
+        if (!trip) {
+            return undefined;  
+        }
+
+        Object.assign(trip, data);  
+        await tripRepository.save(trip);  
+
+        return trip;  
+    }
 }
 
 export default new TripService();
