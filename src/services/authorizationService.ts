@@ -68,14 +68,18 @@ class AuthorizationService {
         }
     
         const school = child.school;
+        const shift = child.school_shift;
     
         const authorizationRepository = db.getRepository(Authorization);
         const authorizations = await authorizationRepository
             .createQueryBuilder("authorization")
+            .innerJoin("trip", "trip", "trip.authorizationAuthorizationId = authorization.authorization_id")
             .where("authorization.school = :school", { school })
+            .andWhere("authorization.work_shift = :shift", { shift })
             .andWhere("authorization.state = :state", { state: 2 })
+            .andWhere("trip.available_capacity > 0")
             .getMany();
-    
+
         return authorizations;
     }
     
