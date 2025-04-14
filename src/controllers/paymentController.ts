@@ -2,6 +2,9 @@ import paymentService from "../services/paymentService";
 import { Request, Response } from "express";
 import { sendError, sendSuccess } from "../utils/requestHandlers";
 import axios from "axios";
+import childService from "../services/childService";
+import tripChildService from "../services/tripChildService";
+import tripService from "../services/tripService";
 
 class PaymentController{
 
@@ -33,9 +36,21 @@ async handleWebhook(req: Request, res: Response) {
           const payment = response.data;
 
           if (payment.status === 'approved') {
-              //aca va meter hijo/s al trip child
-
-              // return sendSuccess(res, { message: "Payment approved", trip });
+            const {child_id, authorization_id, selected_dates} = payment.metadata; 
+            const child = await childService.getChildById(child_id);
+            for (let i = 0; i < selected_dates.length; i++){
+              if (!child?.school_shift) {
+                throw new Error("Child's school shift is undefined");
+              }
+              const trip = await tripService.putTripByAuthorizationAndShift(authorization_id, child.school_shift, selected_dates[i]);
+              console.log("Trip para fecha " + selected_dates[i] + ": ", trip + "actualizado");
+              if(trip){
+                const trip_child= await tripChildService.postTripChild(trip.trip_id, child_id);
+                console.log("Trip_child para fecha " + selected_dates[i] + ": ", trip_child + "creado");
+              }
+             } 
+            
+              return sendSuccess(res, { message: "Transportes creados" });
           }
       }
   } catch (err) {

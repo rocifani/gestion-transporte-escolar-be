@@ -40,6 +40,25 @@ class TripService {
 
         return result ? result : undefined;
     }
+
+    async putTripByAuthorizationAndShift(authorization: number, child_shift: string, selected_date: string): Promise<Trip | undefined> {
+        const tripRepository = db.getRepository(Trip);  
+        const trip = await tripRepository.findOne({
+            where: {
+              authorization: {
+                authorization_id: authorization,
+                work_shift: child_shift,
+              },
+              date: selected_date,
+            },
+            relations: ['authorization'], 
+          }); 
+        if (trip) {
+            trip.available_capacity -= 1; 
+            await tripRepository.save(trip); 
+        }
+        return trip ? trip : undefined; 
+    }
 }
 
 export default new TripService();

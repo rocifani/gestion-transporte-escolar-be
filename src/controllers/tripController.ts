@@ -46,22 +46,22 @@ class TripController {
         }
     }
 
-    async putTrip(req: Request, res: Response){
-        try{
-            const id = Number(req.params['id']);
-            const data = req.body; // TO DO: validar datos del body en el back
-            const trip = await tripService.putTrip(id, data);
-            if(trip){
-                sendSuccess(res, trip);
-            }
-            else{
-                sendError(res, "Trip not found", 404); // TO DO: manejar errores específicos
-            }
-        }
-        catch(error: any){
-            sendError(res, error.message);
-        }
-    }
+    // async putTrip(req: Request, res: Response){
+    //     try{
+    //         const id = Number(req.params['id']);
+    //         const data = req.body; // TO DO: validar datos del body en el back
+    //         const trip = await tripService.putTrip(id, data);
+    //         if(trip){
+    //             sendSuccess(res, trip);
+    //         }
+    //         else{
+    //             sendError(res, "Trip not found", 404); // TO DO: manejar errores específicos
+    //         }
+    //     }
+    //     catch(error: any){
+    //         sendError(res, error.message);
+    //     }
+    // }
 
     async getTripByUser(req: Request, res: Response) {
         try {

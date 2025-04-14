@@ -1,13 +1,11 @@
 
 import { MercadoPagoConfig, Preference} from 'mercadopago';
-import db from '../database/db';
-import { User } from '../models/user';
+import userService from './userService';
 
 class PaymentService {
     
     async createPayment(trip: any): Promise<any> {
-        const userRepository = db.getRepository(User);
-        const user = await userRepository.findOne({ where: { id: trip.user_id } });
+        const user= await userService.getUserById(trip.user_id);
 
         const client = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN as string });
         const preference = new Preference(client);
@@ -33,12 +31,12 @@ class PaymentService {
                     pending: "http://localhost:3000/pending"
                 },
                 metadata: {
-                    user_id: trip.user_id,
                     child_id: trip.child_id,
-                    authorization_id: trip.authorization_id
+                    authorization_id: trip.authorization_id,
+                    selected_dates: trip.selected_dates
                 },
                 auto_return: "approved",
-                notification_url: "https://4bdc-190-2-108-159.ngrok-free.app/payment/webhook"
+                notification_url: "https://4643-190-2-108-159.ngrok-free.app/payment/webhook"
             }
         });
     
