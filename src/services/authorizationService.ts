@@ -1,5 +1,6 @@
 import db from "../database/db";
 import { Authorization } from "../models/authorization";
+import { Child } from "../models/child";
 
 class AuthorizationService {
 
@@ -57,6 +58,27 @@ class AuthorizationService {
         where("authorizations.user_id = :user", { user: id }).getMany();
     }
 
+    async getChildAuthorizations(child_id: number): Promise<Authorization[] | null> {
+        const childRepository = db.getRepository(Child); 
+        const child = await childRepository.findOne({ where: { child_id } });    
+    
+        if (!child) {
+            console.warn(`No se encontró el hijo con ID ${child_id}`);
+            return null;
+        }
+    
+        const school = child.school;
+    
+        const authorizationRepository = db.getRepository(Authorization);
+        const authorizations = await authorizationRepository
+            .createQueryBuilder("authorization")
+            .where("authorization.school = :school", { school })
+            .andWhere("authorization.state = :state", { state: 2 })
+            .getMany();
+    
+        return authorizations;
+    }
+    
     
 
 }

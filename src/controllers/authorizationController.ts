@@ -77,6 +77,21 @@ class AuthorizationController {
             return sendError(res, error.message); 
         }
     }
+
+    async getChildAuthorizations(req: Request, res: Response) {
+        try {
+            const childId = Number(req.params['id']); 
+            if (!childId) {
+                console.log(childId);
+                return sendError(res, "Acceso denegado", 401); 
+            }
+            const authorizations = await authorizationService.getChildAuthorizations(childId);
+            return sendSuccess(res, authorizations); 
+        } 
+        catch (error: any) {
+            return sendError(res, error.message); 
+        }
+    }
 }
 
 export default new AuthorizationController();

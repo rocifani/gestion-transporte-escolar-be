@@ -9,5 +9,6 @@ authorizationRouter.post("/", TokenValidation, authorizationController.postAutho
 authorizationRouter.put("/:id", TokenValidation, authorizationController.putAuthorization)
 authorizationRouter.get("/all", authorizationController.getAllAuthorizations)
 authorizationRouter.get("/:id", authorizationController.getAuthorizationById)
+authorizationRouter.get("/child/:id", authorizationController.getChildAuthorizations)
 
 export default authorizationRouter;
