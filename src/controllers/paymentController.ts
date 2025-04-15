@@ -11,6 +11,7 @@ class PaymentController{
   async createPayment(req: Request, res: Response) {
     try {
       const trip = req.body;
+      console.log(trip.user_id);
       const payment = await paymentService.createPayment(trip);
       return sendSuccess(res, { preferenceId: payment.id });
       
@@ -38,6 +39,10 @@ async handleWebhook(req: Request, res: Response) {
           if (payment.status === 'approved') {
             const {child_id, authorization_id, selected_dates} = payment.metadata; 
             const child = await childService.getChildById(child_id);
+            if(selected_dates.length === 0){
+              console.log("No hay fechas seleccionadas para el viaje");
+              throw new Error("No hay fechas seleccionadas para el viaje");
+            }
             for (let i = 0; i < selected_dates.length; i++){
               if (!child?.school_shift) {
                 throw new Error("Child's school shift is undefined");

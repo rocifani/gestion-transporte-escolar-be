@@ -59,6 +59,7 @@ class TripService {
         }
         return trip ? trip : undefined; 
     }
+
 }
 
 export default new TripService();
