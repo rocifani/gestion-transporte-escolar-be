@@ -28,7 +28,7 @@ import { MercadoPagoConfig, Preference} from 'mercadopago';
                  },
                  back_urls: {
                      success: "http://localhost:8100/success",
-                     failure: "http://localhost:3000/failure",
+                     failure: "http://localhost:8100/failure",
                      pending: "http://localhost:3000/pending"
                  },
                  metadata: {
