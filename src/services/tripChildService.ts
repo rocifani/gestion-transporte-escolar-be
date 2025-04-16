@@ -30,6 +30,7 @@ class TripChildService {
         const tripChildren = await tripChildRepository
             .createQueryBuilder("trip_child")
             .leftJoinAndSelect("trip_child.child_id", "child")
+            .leftJoinAndSelect("trip_child.trip_id", "trip") 
             .leftJoin("child.user", "user")
             .where("user.id = :user_id", { user_id })
             .getMany();
