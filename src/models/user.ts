@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import bcrypt from "bcrypt";
 import { Authorization } from "./authorization";
 import { Child } from "./child";
+import { Price } from "./price";
 
 @Entity('user')
 export class User {
@@ -52,6 +53,9 @@ export class User {
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
   updated_at: string;
+
+  @OneToMany(() => Price, (price) => price.user)
+  prices: Price[];
 
 async encryptPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(10);
