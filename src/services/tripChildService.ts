@@ -37,6 +37,32 @@ class TripChildService {
     
         return tripChildren;
     }
+
+    async getTripChildByTripId(trip_id: number): Promise<TripChild[]> {
+        const tripChildRepository = db.getRepository(TripChild);  
+
+        const tripChildren = await tripChildRepository
+            .createQueryBuilder("trip_child")
+            .leftJoinAndSelect("trip_child.child_id", "child")
+            .leftJoin("child.user", "user")
+            .where("trip_child.trip_id = :trip_id", { trip_id })
+            .getMany();  
+        return tripChildren;  
+    }
+
+    async getParentAddressesByTripId(trip_id: number): Promise<string[]> {
+        const tripChildRepository = db.getRepository(TripChild);
+      
+        const tripChildren = await tripChildRepository
+            .createQueryBuilder("trip_child")
+            .leftJoin("trip_child.child_id", "child")
+            .leftJoin("child.user", "user")
+            .select("user.address", "address")
+            .where("trip_child.trip_id = :tripId", { tripId: trip_id })
+            .getRawMany();
+      
+        return tripChildren.map(item => item.address);
+    }
 }
 
 export default new TripChildService();

@@ -60,6 +60,32 @@ class TripService {
         return trip ? trip : undefined; 
     }
 
+    async getSchoolByTripId(trip_id: number): Promise<string> {
+        const tripRepository = db.getRepository(Trip);
+          
+        const trip = await tripRepository
+            .createQueryBuilder("trip")
+            .leftJoin("trip.authorization", "authorization")
+            .select("authorization.school", "school")
+            .where("trip.trip_id = :tripId", { tripId: trip_id })
+            .getRawOne();
+          
+        return trip ? trip.school : '';
+    }
+
+    async getDriverAddressByTripId(trip_id: number): Promise<string> {
+        const tripRepository = db.getRepository(Trip);
+          
+        const driver = await tripRepository
+            .createQueryBuilder("trip")
+            .leftJoin("trip.authorization", "authorization")
+            .leftJoin("authorization.user", "user")
+            .select("user.address", "address")
+            .where("trip.trip_id = :tripId", { tripId: trip_id })
+            .getRawOne();
+          
+        return driver ? driver.address : '';
+    }
 }
 
 export default new TripService();
