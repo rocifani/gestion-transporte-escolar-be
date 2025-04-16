@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import mapsService from "../services/mapsService";
+import tripChildService from "../services/tripChildService";
+import tripService from "../services/tripService";
 import { sendError, sendSuccess } from '../utils/requestHandlers';
 
 class mapsController {
@@ -49,22 +51,24 @@ class mapsController {
     }
   }
 
-  async geocodeAddresses(_req: Request, res: Response) {
+  async geocodeAddresses(req: Request, res: Response) {
     try {
-      // query para obtener direcciones del viaje
-      // const addresses = await (); 
+      const { id } = req.params;
 
-      const addresses =  [
-        "Av. Corrientes 1234, CABA",
-        "Av. Santa Fe 2000, CABA",
-        "Av. Libertador 5000, CABA",
-      ];
+      const driver_address = await tripService.getDriverAddressByTripId(Number(id));
+      const addresses = await tripChildService.getParentAddressesByTripId(Number(id)); 
+      const school = await tripService.getSchoolByTripId(Number(id));
+
+      console.log("Direcciones de los padres:", addresses);
+      console.log("Dirección de la escuela:", school);
 
       if (!addresses || !Array.isArray(addresses)) {
         return sendError(res, "No se está recibiendo un array", 400);
       }
 
-      const locations = await mapsService.geocodeAddresses(addresses as string[]);
+      const allAddresses = [driver_address, ...addresses, school];
+
+      const locations = await mapsService.geocodeAddresses(allAddresses as string[]);
       const routeInfo = await mapsService.calculateRouteWithDurations(locations);
 
       sendSuccess(res, {

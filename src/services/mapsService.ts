@@ -45,8 +45,32 @@ class mapsService {
     }
   }
 
+  async getPlaceIdFromText(address: string): Promise<string | null> {
+    try {
+      const response = await axios.get("https://maps.googleapis.com/maps/api/place/findplacefromtext/json", {
+        params: {
+          input: address,
+          inputtype: "textquery",
+          fields: "place_id",
+          key: GOOGLE_MAPS_API_KEY,
+        },
+      });
+  
+      const candidates = response.data.candidates;
+      return candidates.length > 0 ? candidates[0].place_id : null;
+    } catch (error: any) {
+      throw new Error("Error al obtener el place_id: " + error.message);
+    }
+  }
+
   async geocodeAddress(address: string) {
     try {
+      const placeId = await this.getPlaceIdFromText(address);
+
+      if (placeId) {
+        return await this.getPlaceDetails(placeId);
+      }
+
       const response = await axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
         params: {
           address,
@@ -91,6 +115,7 @@ class mapsService {
             .slice(1, -1)
             .map(loc => `${loc.lat},${loc.lng}`)
             .join("|"),
+          optimizeWaypoints: true,
           key: GOOGLE_MAPS_API_KEY,
         },
       });
@@ -119,6 +144,8 @@ class mapsService {
       throw new Error("Error al calcular la ruta: " + error.message);
     }
   }
+
+  
 }
 
 export default new mapsService();
