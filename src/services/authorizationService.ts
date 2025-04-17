@@ -9,11 +9,13 @@ class AuthorizationService {
         return await authorizationRepository.find(); 
     }
 
-    async getAuthorizationById(authorization_id: number): Promise<Authorization | undefined> {
-        const authorizationRepository = db.getRepository(Authorization);
-        const authorization = await authorizationRepository.findOne({ where: { authorization_id } });  
-        return authorization ?? undefined;
-    }
+    async getAuthorizationById(authorization_id: number, options = {}): Promise<Authorization | null> {
+        return db.getRepository(Authorization).findOne({
+          where: { authorization_id },
+          relations: ['user'], 
+          ...options
+        });
+      }
 
     async postAuthorization(data: Authorization): Promise<Authorization | undefined> {
         const authorizationRepository = db.getRepository(Authorization);          
