@@ -58,6 +58,9 @@ export class Authorization {
   @Column({})
   state: number;
 
+  @Column({ nullable: true })
+  rejection_reason?: string;
+
   @ManyToOne(() => User, (user) => user.authorizations)
   @JoinColumn({ name: "user_id" })
   user: User;
