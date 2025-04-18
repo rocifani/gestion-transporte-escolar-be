@@ -76,6 +76,7 @@ class AuthorizationService {
         const authorizations = await authorizationRepository
             .createQueryBuilder("authorization")
             .innerJoin("trip", "trip", "trip.authorizationAuthorizationId = authorization.authorization_id")
+            .leftJoinAndSelect("authorization.user", "user")
             .where("authorization.school = :school", { school })
             .andWhere("authorization.work_shift = :shift", { shift })
             .andWhere("authorization.state = :state", { state: 2 })

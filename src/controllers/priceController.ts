@@ -64,6 +64,21 @@ class PriceController {
         }
     }
 
+    async getPriceByUserAuthorization(req: Request, res: Response) {
+        try {
+            const userId = Number(req.userId); 
+            if (!userId) {
+                return sendError(res, "Acceso denegado", 401); 
+            }
+            const id = Number(req.params['id']);
+            const price = await priceService.getPriceByUserAuthorization(id);
+            return sendSuccess(res, price); 
+        }
+        catch (error: any) {
+            return sendError(res, error.message); 
+        }
+    }
+
     async deletePrice(req: Request, res: Response){
         try{
             const id = Number(req.params['id']);

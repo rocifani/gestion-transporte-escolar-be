@@ -23,6 +23,15 @@ class PriceService {
         return price ?? undefined;
     }
 
+    async getPriceByUserAuthorization(id: number): Promise<Price | null> {
+        const priceRepository = db.getRepository(Price); 
+        return await priceRepository.createQueryBuilder("prices")
+            .where("prices.userId = :user_id", { user_id: id })
+            .andWhere("prices.deleted_at IS NULL")
+            .orderBy("prices.date_from", "DESC")
+            .getOne(); 
+    }
+
     async postPrice(data: Price): Promise<Price | undefined> {
         const priceRepository = db.getRepository(Price);  
         const result = await priceRepository.save(data);  
