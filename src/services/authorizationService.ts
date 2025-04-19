@@ -76,13 +76,16 @@ class AuthorizationService {
         const authorizationRepository = db.getRepository(Authorization);
         const authorizations = await authorizationRepository
             .createQueryBuilder("authorization")
-            .innerJoin("trip", "trip", "trip.authorizationAuthorizationId = authorization.authorization_id")
+            .leftJoinAndSelect("authorization.trips", "trip")
             .leftJoinAndSelect("authorization.user", "user")
             .where("authorization.school = :school", { school })
             .andWhere("authorization.work_shift = :shift", { shift })
             .andWhere("authorization.state = :state", { state: 2 })
+            .andWhere("authorization.due_date_driver >= :currentDate", { currentDate: new Date() }) 
+            .andWhere("authorization.due_date_vehicle >= :currentDate", { currentDate: new Date() })
             .andWhere("trip.available_capacity > 0")
             .getMany();
+            console.log(authorizations);
 
         return authorizations;
     }

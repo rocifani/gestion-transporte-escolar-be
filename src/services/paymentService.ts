@@ -58,7 +58,7 @@ import authorizationService from './authorizationService';
                      selected_dates: trip.selected_dates
                  },
                  auto_return: "approved",
-                 notification_url: "https://6a11-190-2-108-159.ngrok-free.app/payment/webhook"
+                 notification_url: "https://1fda-190-2-108-159.ngrok-free.app/payment/webhook"
              }
          });
      
