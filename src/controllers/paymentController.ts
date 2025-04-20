@@ -11,7 +11,6 @@ class PaymentController{
   async createPayment(req: Request, res: Response) {
     try {
       const trip = req.body;
-      console.log(trip.user_id);
       const payment = await paymentService.createPayment(trip);
       return sendSuccess(res, { preferenceId: payment.id });
       

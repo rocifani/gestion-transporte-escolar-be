@@ -20,23 +20,37 @@ import authorizationService from './authorizationService';
          const client = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN as string });
          const preference = new Preference(client);
          console.log("price", price);
-         const items = [
-            {
+         const items = [] as any;
+            if(trip.selected_dates.length < 20) 
+            {items.push({
               id: 'trip',
               title: 'Transporte',
               description: 'Transporte por día',
-              quantity: trip.qty_days,
+              quantity: trip.selected_dates.length,
               unit_price: price?.weekly_price ?? 0
-            }
-          ];
-          
-          if (trip.month_fee === 1) {
+            });
+            } else if (trip.selected_dates.length === 20) {
             items.push({
               id: 'monthly_fee',
-              title: 'Adicional por mes siguiente',
-              description: 'Se incluye mes siguiente completo',
+              title: 'Precio por más de 20 días',
+              description: 'Mes siguiente',
               quantity: 1,
               unit_price: price?.monthly_price ?? 0
+            });
+            } else {
+            items.push({
+              id: 'trip',
+              title: 'Transporte',
+              description: 'Transporte por día',
+              quantity: trip.selected_dates.length - 20,
+              unit_price: price?.weekly_price ?? 0
+            });
+            items.push({
+                id: 'monthly_fee',    
+                title: 'Precio por más de 20 días',
+                description: 'Mes siguiente',
+                quantity: 1,
+                unit_price: price?.monthly_price ?? 0
             });
           }
      
