@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { Trip } from "./trip";
 import { Child } from "./child";
 
@@ -8,9 +8,11 @@ export class TripChild {
   trip_child_id: number;
 
   @ManyToOne(() => Child, (child) => child.child_id)
+  @JoinColumn({ name: "child_id" })
   child_id: Child;
 
   @ManyToOne(() => Trip, (trip) => trip.trip_id)
+  @JoinColumn({ name: "trip_id" })
   trip_id: Trip;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })

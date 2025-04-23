@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { User } from "./user";
 
 @Entity("price")
@@ -10,12 +10,13 @@ export class Price {
   monthly_price: number;
 
   @Column()
-  weekly_price: number;
+  daily_price: number;
 
   @Column({ type: "timestamp" })
   date_from: string;
 
   @ManyToOne(()=> User, (user)=> user.id)
+  @JoinColumn({ name: "user_id" })
   user: User[];
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })

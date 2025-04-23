@@ -27,7 +27,7 @@ import authorizationService from './authorizationService';
               title: 'Transporte',
               description: 'Transporte por día',
               quantity: trip.selected_dates.length,
-              unit_price: price?.weekly_price ?? 0
+              unit_price: price?.daily_price ?? 0
             });
             } else if (trip.selected_dates.length === 20) {
             items.push({
@@ -43,7 +43,7 @@ import authorizationService from './authorizationService';
               title: 'Transporte',
               description: 'Transporte por día',
               quantity: trip.selected_dates.length - 20,
-              unit_price: price?.weekly_price ?? 0
+              unit_price: price?.daily_price ?? 0
             });
             items.push({
                 id: 'monthly_fee',    

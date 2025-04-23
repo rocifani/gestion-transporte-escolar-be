@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from "typeorm";
 import { User } from "./user";
 import { TripChild } from "./trip_child";
 
@@ -23,6 +23,7 @@ export class Child {
   school_shift: string; 
 
   @ManyToOne(() => User, (user) => user.children)
+  @JoinColumn({ name: "user_id" })
   user: User;
 
   @OneToMany(() => TripChild, (trip_child) => trip_child.child_id)

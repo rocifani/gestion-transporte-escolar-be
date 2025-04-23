@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn} from "typeorm";
 import { Authorization } from "./authorization";
 import { TripChild } from "./trip_child";
 
@@ -17,6 +17,7 @@ import { TripChild } from "./trip_child";
     status?: "pending" | "completed" | "cancelled";
 
     @ManyToOne(() => Authorization, (authorization) => authorization.trips)
+    @JoinColumn({ name: "authorization_id" })
     authorization: Authorization;
 
     @OneToMany(() => TripChild, (trip_child) => trip_child.trip_id)
