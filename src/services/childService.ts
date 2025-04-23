@@ -12,7 +12,7 @@ class ChildService {
     async getChildByUser(id: number): Promise<Child[]> {
         const childRepository = db.getRepository(Child); 
         return await childRepository.createQueryBuilder("children")
-            .where("children.userId = :user_id", { user_id: id })
+            .where("children.user_id = :user_id", { user_id: id })
             .andWhere("children.deleted_at IS NULL")
             .getMany();  
     }

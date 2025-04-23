@@ -12,7 +12,7 @@ class TripService {
     async getTripByUser(id: number): Promise<Trip[]> {
         const tripRepository = db.getRepository(Trip); 
         return await tripRepository.createQueryBuilder("trips")
-            .where("trips.userId = :user_id", { user_id: id })
+            .where("trips.user_id = :user_id", { user_id: id })
             .getMany();  
     }
 

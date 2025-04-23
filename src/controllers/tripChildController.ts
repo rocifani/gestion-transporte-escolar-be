@@ -15,6 +15,18 @@ class TripController {
             sendError(res, error.message);
         }
     }
+
+    async getTripChildByChildId(req: Request, res: Response){
+        try{
+            const childId = Number(req.params['child_id']);
+            const trip_childs= await tripChildService.getTripChildByChildId(childId);
+            sendSuccess(res, trip_childs);
+
+        }
+        catch(error: any){
+            sendError(res, error.message);
+        }
+    }
 }
 
 export default new TripController();

@@ -31,7 +31,7 @@ class TripChildService {
             .createQueryBuilder("trip_child")
             .leftJoinAndSelect("trip_child.child_id", "child")
             .leftJoinAndSelect("trip_child.trip_id", "trip") 
-            .leftJoin("child.user", "user")
+            .leftJoin("child.user_id", "user")
             .where("user.id = :user_id", { user_id })
             .getMany();
     
@@ -44,8 +44,20 @@ class TripChildService {
         const tripChildren = await tripChildRepository
             .createQueryBuilder("trip_child")
             .leftJoinAndSelect("trip_child.child_id", "child")
-            .leftJoin("child.user", "user")
+            .leftJoin("child.user_id", "user")
             .where("trip_child.trip_id = :trip_id", { trip_id })
+            .getMany();  
+        return tripChildren;  
+    }
+
+    async getTripChildByChildId(child_id: number): Promise<TripChild[]> {
+        const tripChildRepository = db.getRepository(TripChild);  
+
+        const tripChildren = await tripChildRepository
+            .createQueryBuilder("trip_child")
+            .leftJoinAndSelect("trip_child.trip_id", "trip")
+            .leftJoinAndSelect("trip_child.child_id", "child")
+            .where("child.child_id = :child_id", { child_id })
             .getMany();  
         return tripChildren;  
     }
