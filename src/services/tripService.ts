@@ -11,8 +11,11 @@ class TripService {
 
     async getTripByUser(id: number): Promise<Trip[]> {
         const tripRepository = db.getRepository(Trip); 
+        console.log("ID: ", id);
         return await tripRepository.createQueryBuilder("trips")
-            .where("trips.user_id = :user_id", { user_id: id })
+            .leftJoinAndSelect("trips.authorization", "authorization")
+            .leftJoin("authorization.user", "user")
+            .where("user.id = :user_id", { user_id: id })
             .getMany();  
     }
 
