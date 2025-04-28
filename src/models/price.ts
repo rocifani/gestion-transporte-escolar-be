@@ -15,7 +15,7 @@ export class Price {
   @Column({ type: "timestamp" })
   date_from: string;
 
-  @ManyToOne(()=> User, (user)=> user.id)
+  @ManyToOne(()=> User, (user)=> user.prices)
   @JoinColumn({ name: "user_id" })
   user: User[];
 

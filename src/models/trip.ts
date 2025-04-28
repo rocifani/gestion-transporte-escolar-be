@@ -20,8 +20,8 @@ import { TripChild } from "./trip_child";
     @JoinColumn({ name: "authorization_id" })
     authorization: Authorization;
 
-    @OneToMany(() => TripChild, (trip_child) => trip_child.trip_id)
-    trip_child_id: TripChild;
+    @OneToMany(() => TripChild, (trip_child) => trip_child.trip)
+    trip_child: TripChild;
   
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     created_at: string;

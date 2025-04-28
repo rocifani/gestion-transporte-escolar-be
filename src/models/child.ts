@@ -26,8 +26,8 @@ export class Child {
   @JoinColumn({ name: "user_id" })
   user: User;
 
-  @OneToMany(() => TripChild, (trip_child) => trip_child.child_id)
-  trip_child_id: TripChild;
+  @OneToMany(() => TripChild, (trip_child) => trip_child.child)
+  trip_children: TripChild[];
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: string;
@@ -37,4 +37,5 @@ export class Child {
 
   @Column({ type: "timestamp", nullable: true })
   deleted_at?: string;
+  child: any;
 }

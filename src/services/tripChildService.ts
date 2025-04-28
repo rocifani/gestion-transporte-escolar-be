@@ -13,7 +13,7 @@ class TripChildService {
         if (!trip) {
             throw new Error(`Trip with id ${trip_id} not found`);
         }
-        tripChild.trip_id = trip;
+        tripChild.trip = trip;
         const child = await db.getRepository(Child).findOne({ where: { child_id } });
         if (!child) {
             throw new Error(`Child with id ${child_id} not found`);
