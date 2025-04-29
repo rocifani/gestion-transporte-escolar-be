@@ -33,7 +33,8 @@ class AuthorizationService {
             authorization.address = data.address;
             authorization.phone = data.phone;
             authorization.gender = data.gender;
-            authorization.school = data.school;
+            authorization.school_name = data.school_name;
+            authorization.school_address = data.school_address;
             authorization.work_shift = data.work_shift;
             authorization.vehicle_make = data.vehicle_make;
             authorization.vehicle_model = data.vehicle_model;
@@ -70,7 +71,7 @@ class AuthorizationService {
             return null;
         }
     
-        const school = child.school;
+        const school = child.school_address;
         const shift = child.school_shift;
     
         const authorizationRepository = db.getRepository(Authorization);
@@ -78,7 +79,7 @@ class AuthorizationService {
             .createQueryBuilder("authorization")
             .leftJoinAndSelect("authorization.trips", "trip")
             .leftJoinAndSelect("authorization.user", "user")
-            .where("authorization.school = :school", { school })
+            .where("authorization.school_address = :school", { school })
             .andWhere("authorization.work_shift = :shift", { shift })
             .andWhere("authorization.state = :state", { state: 2 })
             .andWhere("authorization.due_date_driver >= :currentDate", { currentDate: new Date() }) 

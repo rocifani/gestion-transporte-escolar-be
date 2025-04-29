@@ -23,7 +23,10 @@ export class Authorization {
   gender?: string;
 
   @Column()
-  school: string;
+  school_name: string;
+
+  @Column()
+  school_address: string;
 
   @Column()
   work_shift: string;

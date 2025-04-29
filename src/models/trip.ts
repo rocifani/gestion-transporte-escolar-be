@@ -21,12 +21,13 @@ import { TripChild } from "./trip_child";
     authorization: Authorization;
 
     @OneToMany(() => TripChild, (trip_child) => trip_child.trip)
-    trip_child: TripChild;
+    trip_child: TripChild[];
   
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     created_at: string;
 
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
     updated_at: string;
+    trip_children: any;
   }
   

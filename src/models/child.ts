@@ -17,7 +17,10 @@ export class Child {
   age: number;
 
   @Column()
-  school: string;
+  school_name: string;
+
+  @Column()
+  school_address: string;
 
   @Column()
   school_shift: string; 
@@ -37,5 +40,4 @@ export class Child {
 
   @Column({ type: "timestamp", nullable: true })
   deleted_at?: string;
-  child: any;
 }

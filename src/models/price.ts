@@ -17,7 +17,7 @@ export class Price {
 
   @ManyToOne(()=> User, (user)=> user.prices)
   @JoinColumn({ name: "user_id" })
-  user: User[];
+  user: User;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: string;

@@ -18,7 +18,7 @@ class TripChildService {
         if (!child) {
             throw new Error(`Child with id ${child_id} not found`);
         }
-        tripChild.child_id = child;
+        tripChild.child = child;
 
         const result = await tripChildRepository.save(tripChild);  
         return result ?? undefined; 
@@ -38,8 +38,8 @@ class TripChildService {
     
         const tripChildren = await tripChildRepository
             .createQueryBuilder("trip_child")
-            .leftJoinAndSelect("trip_child.child_id", "child")
-            .leftJoinAndSelect("trip_child.trip_id", "trip") 
+            .leftJoinAndSelect("trip_child.child", "child")
+            .leftJoinAndSelect("trip_child.trip", "trip")
             .leftJoin("child.user", "user")
             .where("user.id = :user_id", { user_id })
             .andWhere("trip_child.deleted_at IS NULL")

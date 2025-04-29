@@ -7,13 +7,13 @@ export class TripChild {
   @PrimaryGeneratedColumn()
   trip_child_id: number;
 
-  @ManyToOne(() => Child, (child) => child.child)
+  @ManyToOne(() => Child, (child) => child.trip_children)
   @JoinColumn({ name: "child_id" })
-  child_id: Child;
+  child: Child;
 
-  @ManyToOne(() => Trip, (trip) => trip.trip_child)
+  @ManyToOne(() => Trip, (trip) => trip.trip_children)
   @JoinColumn({ name: "trip_id" })
-  trip_child: Trip;
+  trip: Trip;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: string;
@@ -23,6 +23,4 @@ export class TripChild {
 
   @Column({ type: "timestamp", nullable: true })
   deleted_at?: string;
-  child: any;
-  trip: any;
 }

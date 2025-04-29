@@ -38,7 +38,8 @@ class ChildService {
             child.name = data.name || child.name;
             child.last_name = data.last_name || child.last_name;
             child.age = data.age || child.age;
-            child.school = data.school || child.school;
+            child.school_name = data.school_name || child.school_name;
+            child.school_address = data.school_address || child.school_address;
             child.user = child.user;
             child.school_shift = data.school_shift || child.school_shift;
           
