@@ -28,7 +28,7 @@ class TripChildService {
         const tripChildRepository = db.getRepository(TripChild);  
         const tripChild = await tripChildRepository.findOne({ 
             where: { trip_child_id, deleted_at: IsNull() },
-            relations: ["trip_id", "child_id", "trip_id.authorization"] 
+            relations: ["trip", "child", "trip.authorization"] 
         });
         return tripChild ?? undefined; 
     }
@@ -53,9 +53,9 @@ class TripChildService {
 
         const tripChildren = await tripChildRepository
             .createQueryBuilder("trip_child")
-            .leftJoinAndSelect("trip_child.child_id", "child")
-            .leftJoin("child.user_id", "user")
-            .where("trip_child.trip_id = :trip_id", { trip_id })
+            .leftJoinAndSelect("trip_child.child", "child")
+            .leftJoin("child.user", "user")
+            .where("trip_child.trip = :trip_id", { trip_id })
             .andWhere("trip_child.deleted_at IS NULL")
             .getMany();  
         return tripChildren;  
@@ -66,8 +66,8 @@ class TripChildService {
 
         const tripChildren = await tripChildRepository
             .createQueryBuilder("trip_child")
-            .leftJoinAndSelect("trip_child.trip_id", "trip")
-            .leftJoinAndSelect("trip_child.child_id", "child")
+            .leftJoinAndSelect("trip_child.trip", "trip")
+            .leftJoinAndSelect("trip_child.child", "child")
             .where("child.child_id = :child_id", { child_id })
             .andWhere("trip_child.deleted_at IS NULL")
             .getMany();  

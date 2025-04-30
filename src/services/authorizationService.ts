@@ -70,8 +70,6 @@ class AuthorizationService {
             console.warn(`No se encontró el hijo con ID ${child_id}`);
             return null;
         }
-    
-        const school = child.school_address;
         const shift = child.school_shift;
     
         const authorizationRepository = db.getRepository(Authorization);
@@ -79,14 +77,12 @@ class AuthorizationService {
             .createQueryBuilder("authorization")
             .leftJoinAndSelect("authorization.trips", "trip")
             .leftJoinAndSelect("authorization.user", "user")
-            .where("authorization.school_address = :school", { school })
-            .andWhere("authorization.work_shift = :shift", { shift })
+            .where("authorization.work_shift = :shift", { shift })
             .andWhere("authorization.state = :state", { state: 2 })
             .andWhere("authorization.due_date_driver >= :currentDate", { currentDate: new Date() }) 
             .andWhere("authorization.due_date_vehicle >= :currentDate", { currentDate: new Date() })
             .andWhere("trip.available_capacity > 0")
             .getMany();
-            console.log(authorizations);
 
         return authorizations;
     }

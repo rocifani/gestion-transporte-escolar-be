@@ -12,7 +12,7 @@ class PriceService {
     async getPriceByUser(id: number): Promise<Price[]> {
         const priceRepository = db.getRepository(Price); 
         return await priceRepository.createQueryBuilder("prices")
-            .where("prices.user_id = :user_id", { user_id: id })
+            .where("prices.user = :user_id", { user_id: id })
             .andWhere("prices.deleted_at IS NULL")
             .getMany();  
     }
@@ -26,7 +26,7 @@ class PriceService {
     async getPriceByUserAuthorization(id: number): Promise<Price | null> {
         const priceRepository = db.getRepository(Price); 
         return await priceRepository.createQueryBuilder("prices")
-            .where("prices.user_id = :user_id", { user_id: id })
+            .where("prices.user = :user_id", { user_id: id })
             .andWhere("prices.deleted_at IS NULL")
             .orderBy("prices.date_from", "DESC")
             .getOne(); 
