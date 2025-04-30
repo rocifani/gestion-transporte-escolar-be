@@ -69,7 +69,7 @@ class TripService {
         const trip = await tripRepository
             .createQueryBuilder("trip")
             .leftJoin("trip.authorization", "authorization")
-            .select("authorization.school", "school")
+            .select("authorization.school_name", "school")
             .where("trip.trip_id = :tripId", { tripId: trip_id })
             .getRawOne();
           

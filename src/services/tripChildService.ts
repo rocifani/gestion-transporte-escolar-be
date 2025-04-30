@@ -79,10 +79,10 @@ class TripChildService {
       
         const tripChildren = await tripChildRepository
             .createQueryBuilder("trip_child")
-            .leftJoin("trip_child.child_id", "child")
+            .leftJoin("trip_child.child", "child")
             .leftJoin("child.user", "user")
             .select("user.address", "address")
-            .where("trip_child.trip_id = :tripId", { tripId: trip_id })
+            .where("trip_child.trip = :tripId", { tripId: trip_id })
             .andWhere("trip_child.deleted_at IS NULL")
             .getRawMany();
       
