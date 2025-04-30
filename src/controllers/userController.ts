@@ -109,27 +109,21 @@ class UserController {
     async confirmEmail(req: Request, res: Response) {
         try {
             const { token } = req.params;
-    
             if (!token) {
                 return sendError(res, "Token inválido", 400);
             }
-    
             const decoded: any = jwt.verify(token, process.env.SECRET_TOKEN || 'tokentest');
-    
             const user = await userService.getUserById(decoded._id);
             if (!user) {
                 return sendError(res, "Usuario no encontrado", 404);
             }
-    
             if (user.is_confirmed) {
                 return sendError(res, "El usuario ya ha sido confirmado", 400);
             }
             else {
                 await userService.confirmUser(decoded._id);
             }
-    
             await userService.confirmUser(decoded._id);
-    
             sendSuccess(res, "Cuenta confirmada exitosamente");
         } catch (error: any) {
             sendError(res, "Token inválido o expirado", 400);

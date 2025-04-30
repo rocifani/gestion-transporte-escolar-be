@@ -30,24 +30,31 @@ class PriceController {
         }
     }
 
-    async postPrice(req: Request, res: Response){
-    try{
-        const data = req.body; 
-        console.log(data);
-        data.user = Number(req.userId); 
-        console.log(data);
-        const price = await priceService.postPrice(data);
-        if(price){
+    async postPrice(req: Request, res: Response) {
+        try {
+          const data = req.body;
+          const requiredFields = ["monthly_price", "daily_price", "date_from"];
+          const missingFields = requiredFields.filter(field => !data[field] && data[field] !== 0);
+          if (missingFields.length > 0) {
+            return sendError(res, `Faltan los siguientes campos: ${missingFields.join(", ")}`, 400);
+          }
+          if (isNaN(Number(data.monthly_price)) || Number(data.monthly_price) < 0) {
+            return sendError(res, "El precio mensual debe ser un número válido", 400);
+          }
+          if (isNaN(Number(data.daily_price)) || Number(data.daily_price) < 0) {
+            return sendError(res, "El precio diario debe ser un número válido", 400);
+          }
+          data.user = Number(req.userId);
+          const price = await priceService.postPrice(data);
+          if (price) {
             sendSuccess(res, price);
+          } else {
+            sendError(res, "El precio no pudo ser creado", 500);
+          }
+        } catch (error: any) {
+            sendError(res, error.message || "Error interno del servidor", 500);
         }
-        else{
-            sendError(res, "El precio no pudo ser creado", 500); // TO DO: manejar errores específicos
-        }
-    }
-    catch(error: any){
-        sendError(res, error.message);
-    }
-}
+      }
 
    
     async getPriceByUser(req: Request, res: Response) {

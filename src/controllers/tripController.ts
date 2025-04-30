@@ -30,21 +30,40 @@ class TripController {
         }
     }
 
-    async postTrip(req: Request, res: Response){
-        try{
-            const data = req.body; // TO DO: validar datos del body en el back
-            const trip = await tripService.postTrip(data);
-            if(trip){
-                sendSuccess(res, trip);
-            }
-            else{
-                sendError(res, "Trip could not be created", 500); // TO DO: manejar errores específicos
-            }
+    async postTrip(req: Request, res: Response) {
+        try {
+          const data = req.body;
+          const requiredFields = ["available_capacity", "authorization"];
+          const missingFields = requiredFields.filter(field => !data[field] && data[field] !== 0);
+          if (missingFields.length > 0) {
+            return sendError(res, `Faltan los siguientes campos: ${missingFields.join(", ")}`, 400);
+          }
+          if (isNaN(Number(data.available_capacity)) || Number(data.available_capacity) < 0) {
+            return sendError(res, "La capacidad disponible debe ser un número positivo", 400);
+          }
+          const allowedStatuses = ["pending", "completed", "cancelled"];
+          if (data.status && !allowedStatuses.includes(data.status)) {
+            return sendError(res, `El estado debe ser uno de: ${allowedStatuses.join(", ")}`, 400);
+          }
+          if (data.date && isNaN(Date.parse(data.date))) {
+            return sendError(res, "La fecha no es válida (debe ser ISO 8601)", 400);
+          }
+          const trip = await tripService.postTrip(data);
+      
+          if (trip) {
+            sendSuccess(res, trip);
+          } else {
+            sendError(res, "El viaje no pudo ser creado", 500);
+          }
+      
+        } catch (error: any) {
+          if (error.code === '23503') {
+            sendError(res, "La autorización especificada no existe", 400); 
+          } else {
+            sendError(res, error.message || "Error interno del servidor", 500);
+          }
         }
-        catch(error: any){
-            sendError(res, error.message);
-        }
-    }
+      }
 
     // async putTrip(req: Request, res: Response){
     //     try{

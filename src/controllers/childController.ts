@@ -30,22 +30,34 @@ class ChildController {
         }
     }
 
-    async postChild(req: Request, res: Response){
-    try{
-        const data = req.body; // TO DO: validar datos del body en el back
-        data.user = Number(req.userId); 
-        const child = await childService.postChild(data);
-        if(child){
+    async postChild(req: Request, res: Response) {
+        try {
+          const data = req.body;
+          const requiredFields = [
+            "name", "last_name", "age", "school_name", "school_address", "school_shift"
+          ];
+          const missingFields = requiredFields.filter(field => !data[field]);
+          if (missingFields.length > 0) {
+            return sendError(res, `Faltan los siguientes campos: ${missingFields.join(", ")}`, 400);
+          }
+          if (isNaN(Number(data.age)) || Number(data.age) <= 0) {
+            return sendError(res, "La edad debe ser un número positivo", 400);
+          }
+          data.user = Number(req.userId);
+          const child = await childService.postChild(data);
+          if (child) {
             sendSuccess(res, child);
+          } else {
+            sendError(res, "El niño no pudo ser creado", 500); 
+          }
+        } catch (error: any) {
+          if (error.code === '23505') {
+            sendError(res, "Ya existe un registro con los mismos datos", 400); 
+          } else {
+            sendError(res, error.message || "Error interno del servidor", 500);
+          }
         }
-        else{
-            sendError(res, "El vehiculo no pudo ser creado", 500); // TO DO: manejar errores específicos
-        }
-    }
-    catch(error: any){
-        sendError(res, error.message);
-    }
-}
+      }
 
     async putChild(req: Request, res: Response){
         try{

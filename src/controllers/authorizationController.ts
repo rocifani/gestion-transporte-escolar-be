@@ -30,22 +30,46 @@ class AuthorizationController {
         }
     }
 
-    async postAuthorization(req: Request, res: Response){
-        try{
-            const data = req.body; // TO DO: validar datos del body en el back
-            data.user = Number(req.userId); 
-            const authorization = await authorizationService.postAuthorization(data);
-            if(authorization){
-                sendSuccess(res, authorization);
-            }
-            else{
-                sendError(res, "La habilitacion no pudo ser creada", 500); // TO DO: manejar errores específicos
-            }
+    async postAuthorization(req: Request, res: Response) {
+        try {
+          const data = req.body;
+          const requiredFields = [
+            "driver_name", "dni", "school_name", "school_address", "work_shift",
+            "vehicle_make", "vehicle_model", "vehicle_year", "vehicle_license_plate",
+            "vehicle_capacity", "due_date_vehicle", "due_date_driver", "state"
+          ];
+      
+          const missingFields = requiredFields.filter(field => !data[field]);
+          if (missingFields.length > 0) {
+            return sendError(res, `Faltan los siguientes campos: ${missingFields.join(", ")}`, 400);
+          }
+          if (isNaN(Number(data.vehicle_year))) {
+            return sendError(res, "El año del vehículo debe ser un número", 400);
+          }
+          if (isNaN(Number(data.vehicle_capacity))) {
+            return sendError(res, "La capacidad del vehículo debe ser un número", 400);
+          }
+          if (isNaN(Date.parse(data.due_date_vehicle))) {
+            return sendError(res, "La fecha de vencimiento del vehículo no es válida", 400);
+          }
+          if (isNaN(Date.parse(data.due_date_driver))) {
+            return sendError(res, "La fecha de vencimiento del conductor no es válida", 400);
+          }
+          data.user = Number(req.userId);
+          const authorization = await authorizationService.postAuthorization(data);
+          if (authorization) {
+            sendSuccess(res, authorization);
+          } else {
+            sendError(res, "La habilitación no pudo ser creada", 500);
+          }
+        } catch (error: any) {
+          if (error.code === '23505') {
+            sendError(res, "Ya existe una autorización con esa patente", 400);
+          } else {
+            sendError(res, error.message || "Error interno del servidor", 500);
+          }
         }
-        catch(error: any){
-            sendError(res, error.message);
-        }
-    }
+      }
 
     async putAuthorization(req: Request, res: Response){
         try{
