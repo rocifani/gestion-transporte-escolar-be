@@ -69,7 +69,7 @@ class TripService {
         const trip = await tripRepository
             .createQueryBuilder("trip")
             .leftJoin("trip.authorization", "authorization")
-            .select("authorization.school_name", "school")
+            .select("authorization.school_address", "school")
             .where("trip.trip_id = :tripId", { tripId: trip_id })
             .getRawOne();
           
@@ -82,8 +82,7 @@ class TripService {
         const driver = await tripRepository
             .createQueryBuilder("trip")
             .leftJoin("trip.authorization", "authorization")
-            .leftJoin("authorization.user", "user")
-            .select("user.address", "address")
+            .select("authorization.address", "address")
             .where("trip.trip_id = :tripId", { tripId: trip_id })
             .getRawOne();
           
