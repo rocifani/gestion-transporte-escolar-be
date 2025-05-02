@@ -14,7 +14,7 @@ app.use(cors());
 app.use("/", routes);
 
 
-const PORT = process.env.PORT || 3000;
+const PORT =  3000;
 const HTTPS_PORT = 3443;
 
 const httpsOptions = {
@@ -25,10 +25,10 @@ const httpsOptions = {
 AppDataSource.initialize()
   .then(() => {
     console.log("Database connected!");
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server running on port ${PORT}`);
     });
-    https.createServer(httpsOptions, app).listen(HTTPS_PORT, () => {
+    https.createServer(httpsOptions, app).listen(HTTPS_PORT, '0.0.0.0', () => {
       console.log(`Server running on HTTPS: https://localhost:${HTTPS_PORT}`);
     });
   })
