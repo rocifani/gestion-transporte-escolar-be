@@ -8,6 +8,7 @@ import filesRoutes from "./filesRoutes";
 import paymentRoutes from "./paymentRoutes";
 import tripChildRoutes from "./tripChildRoutes";
 import priceRoutes from "./priceRoutes";
+import notificationRoutes from "./notificationRoutes";
 
 const router = Router();
 
@@ -19,6 +20,7 @@ router.use("/tripchild", tripChildRoutes);
 router.use("/maps", mapsRoutes);
 router.use("/files", filesRoutes);
 router.use("/payment", paymentRoutes);
-router.use("/price", priceRoutes)
+router.use("/price", priceRoutes);
+router.use("/notification", notificationRoutes);
 
 export default router;

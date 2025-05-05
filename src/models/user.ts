@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { Authorization } from "./authorization";
 import { Child } from "./child";
 import { Price } from "./price";
+import { Notification } from "./notification";
 
 @Entity('user')
 export class User {
@@ -56,6 +57,9 @@ export class User {
 
   @OneToMany(() => Price, (price) => price.user)
   prices: Price[];
+
+  @OneToMany(() => Notification, (notification) => notification.user)
+  notifications: Notification[];
 
 async encryptPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(10);
