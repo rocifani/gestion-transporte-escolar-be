@@ -53,13 +53,11 @@ class NotificationController {
    
     async getNotificationByUser(req: Request, res: Response) {
         try {
-            console.log(req.userId);
             const userId = Number(req.userId); 
             if (!userId) {
                 return sendError(res, "Acceso denegado", 401); 
             }
             const notifications = await notificationService.getNotificationByUser(userId);
-            console.log(notifications);
             return sendSuccess(res, notifications); 
         } 
         catch (error: any) {
