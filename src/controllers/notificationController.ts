@@ -81,6 +81,22 @@ class NotificationController {
         }
     }
 
+    async markNotificationAsRead(req: Request, res: Response){
+        try{
+            const id = Number(req.params['id']);
+            const updated = await notificationService.markNotificationAsRead(id);
+            console.log(updated);
+            if(updated){
+                sendSuccess(res, "Notificacion marcado como leido correctamente");
+            }
+            else{
+                sendError(res, "Notificacion no encontrado", 404); 
+            }
+        }
+        catch(error: any){
+            sendError(res, error.message);
+        }
+    }
 
 }
 

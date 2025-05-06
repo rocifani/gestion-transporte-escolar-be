@@ -42,6 +42,18 @@ class NotificationService {
         }
         return false;
     }
+
+    async markNotificationAsRead(notification_id: number): Promise<boolean> {
+        const notificationRepository = db.getRepository(Notification);
+        const notification = await notificationRepository.findOne({ where: { notification_id, deleted_at: IsNull() } });
+
+        if (notification) {
+            notification.is_read = true;
+            await notificationRepository.save(notification);
+            return true;
+        }
+        return false;
+    }
 }
 
 export default new NotificationService();
