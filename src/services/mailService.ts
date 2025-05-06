@@ -42,4 +42,20 @@ export const sendForgotPasswordEmail = async (email:string, token:string) => {
   };
   
     await transporter.sendMail(mailOptions);
-  }
+  };
+
+export const sendNewAuthorizationNotification = async (userName: string, authorizationId: number, adminEmail: string, adminName: string) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: adminEmail,
+    subject: 'Nueva autorización creada',
+    html: `<div style="font-family: 'Montserrat', sans-serif; color: #003366; text-align: center; padding: 20px; background-color: #f7f7f7; border-radius: 10px;">
+        <h2 style="font-size: 30px; color: #003366;">¡Hola ${adminName}!</h2>
+        <p style="font-size: 16px; color: #333;">Se ha creado una nueva solicitud de aprobación (nro ${authorizationId}) de autorización para ${userName}.</p>
+        <p style="font-size: 16px; color: #333;">Por favor revisa la aplicación.</p>
+      </div>`,
+  };
+
+  await transporter.sendMail(mailOptions);
+}
+

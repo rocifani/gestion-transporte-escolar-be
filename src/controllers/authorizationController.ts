@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import authorizationService from '../services/authorizationService';
 import { sendError, sendSuccess } from '../utils/requestHandlers';
+import  userService from '../services/userService';
+import { sendNewAuthorizationNotification } from '../services/mailService';
+import notificationService from '../services/notificationService';
 
 class AuthorizationController {
 
@@ -59,6 +62,22 @@ class AuthorizationController {
           const authorization = await authorizationService.postAuthorization(data);
           if (authorization) {
             sendSuccess(res, authorization);
+            const admin = await userService.getAdminUser();
+            const user = await userService.getUserById(Number(authorization.user));
+            if (admin && user) {
+                sendNewAuthorizationNotification(user.full_name, authorization.authorization_id, admin.email, admin.full_name);
+                notificationService.postNotification({
+                                                    notification_id: 0, 
+                                                    title: "Nueva autorización creada",
+                                                    detail: `Se ha solicitado la aprobación de una nueva autorización para ${user.full_name}. Por favor, ingresá a revisarla!`,
+                                                    user: admin,
+                                                    is_read: false,
+                                                    created_at: new Date().toISOString(),
+                                                    updated_at: new Date().toISOString()
+                                                });
+            } else {
+                console.error("Admin user not found");
+            }
           } else {
             sendError(res, "La habilitación no pudo ser creada", 500);
           }

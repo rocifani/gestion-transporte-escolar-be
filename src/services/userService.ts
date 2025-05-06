@@ -86,7 +86,13 @@ class UserService {
         const user = await userRepository.findOne({ where: { email } }); 
         return user ?? undefined;
     }
-    // TO DO: implementar delete. No se si hacer un borrado definitivo o un borrado lógico.
+    
+
+    async getAdminUser(): Promise<User | undefined> {
+        const userRepository = db.getRepository(User);  
+        const adminUser = await userRepository.findOne({ where: { role_id: 3 } });  
+        return adminUser ?? undefined;
+    }
 
 }
 
