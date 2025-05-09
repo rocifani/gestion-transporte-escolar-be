@@ -36,7 +36,7 @@ async handleWebhook(req: Request, res: Response) {
           const payment = response.data;
 
           if (payment.status === 'approved') {
-            const {child_id, authorization_id, selected_dates} = payment.metadata; 
+            const {child_id, authorization_id, selected_dates, price} = payment.metadata; 
             const child = await childService.getChildById(child_id);
             if(selected_dates.length === 0){
               console.log("No hay fechas seleccionadas para el viaje");
@@ -46,7 +46,7 @@ async handleWebhook(req: Request, res: Response) {
               if (!child?.school_shift) {
                 throw new Error("Child's school shift is undefined");
               }
-              const trip = await tripService.putTripByAuthorizationAndShift(authorization_id, child.school_shift, selected_dates[i]);
+              const trip = await tripService.putTripByAuthorizationAndShift(authorization_id, child.school_shift, selected_dates[i], price);
               console.log("Trip para fecha " + selected_dates[i] + ": ", trip + "actualizado");
               if(trip){
                 const trip_child= await tripChildService.postTripChild(trip.trip_id, child_id);

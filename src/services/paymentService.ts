@@ -19,10 +19,11 @@ import authorizationService from './authorizationService';
  
          const client = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN as string });
          const preference = new Preference(client);
-         console.log("price", price);
+         let total = 0;
          const items = [] as any;
             if(trip.selected_dates.length < 20) 
-            {items.push({
+            { total = trip.selected_dates.length * (price?.daily_price ?? 0);
+              items.push({
               id: 'trip',
               title: 'Transporte',
               description: 'Transporte por día',
@@ -30,6 +31,7 @@ import authorizationService from './authorizationService';
               unit_price: price?.daily_price ?? 0
             });
             } else if (trip.selected_dates.length === 20) {
+            total = price?.monthly_price ?? 0;
             items.push({
               id: 'monthly_fee',
               title: 'Precio por más de 20 días',
@@ -38,6 +40,7 @@ import authorizationService from './authorizationService';
               unit_price: price?.monthly_price ?? 0
             });
             } else {
+            total = trip.selected_dates.length - 20 * (price?.daily_price ?? 0) + (price?.monthly_price ?? 0);
             items.push({
               id: 'trip',
               title: 'Transporte',
@@ -47,7 +50,7 @@ import authorizationService from './authorizationService';
             });
             items.push({
                 id: 'monthly_fee',    
-                title: 'Precio por más de 20 días',
+                title: 'Precio por más de 20 días', 
                 description: 'Mes siguiente',
                 quantity: 1,
                 unit_price: price?.monthly_price ?? 0
@@ -63,16 +66,17 @@ import authorizationService from './authorizationService';
                  },
                  back_urls: {
                      success: "http://localhost:8100/success",
-                     failure: "http://localhost:8100/failure",
-                     pending: "http://localhost:3000/pending"
+                     failure: "https://localhost:8100/failure",
+                     pending: "https://localhost:3000/pending"
                  },
                  metadata: {
                      child_id: trip.child_id,
                      authorization_id: trip.authorization_id,
-                     selected_dates: trip.selected_dates
+                     selected_dates: trip.selected_dates,
+                     price: total
                  },
                  auto_return: "approved",
-                 notification_url: "https://1fda-190-2-108-159.ngrok-free.app/payment/webhook"
+                 notification_url: "https://92f8-190-2-108-170.ngrok-free.app/payment/webhook"
              }
          });
      
