@@ -93,6 +93,18 @@ class TripController {
         }
     }
 
+    async markTripsAsPaid(req: Request, res: Response): Promise<void> {
+        const { userId, month } = req.body;
+
+        try {
+          await tripService.markTripsAsPaid(userId, month);
+          res.status(200).json({ message: "Pagos marcados como realizados" });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: "Error al actualizar los pagos" });
+        }
+      }
+
 
 }
 

@@ -7,6 +7,7 @@ tripRouter.get("/price", TokenValidation, tripController.getPaymentsByDriver)
 tripRouter.get("/", TokenValidation, tripController.getTripByUser)
 tripRouter.get("/:id", tripController.getTripById)
 tripRouter.get("/", tripController.getAllTrips)
+tripRouter.put("/pay", TokenValidation, tripController.markTripsAsPaid)
 tripRouter.post("/", tripController.postTrip)
 
 export default tripRouter;

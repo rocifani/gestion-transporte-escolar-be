@@ -25,6 +25,9 @@ import { TripChild } from "./trip_child";
 
     @Column({nullable: true })
     total_price: number;
+
+    @Column({default: false})
+    is_paid: boolean;
   
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     created_at: string;

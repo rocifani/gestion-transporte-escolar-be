@@ -105,6 +105,7 @@ class TripService {
             .addSelect("authorization.ubc", "ubc")
             .addSelect("DATE_FORMAT(trip.date, '%Y-%m')", "month")
             .addSelect("SUM(trip.total_price)", "totalAmount")
+            .addSelect("MAX(trip.is_paid)", "is_paid")
             .groupBy("user.id")
             .addGroupBy("user.full_name")
             .addGroupBy("month")
@@ -118,8 +119,25 @@ class TripService {
             full_name: payment.full_name,
             totalAmount: parseFloat(payment.totalAmount),
             month: payment.month,
-            ubc: payment.ubc
+            ubc: payment.ubc,
+            is_paid: !!payment.is_paid
         }));
+    }
+
+    async markTripsAsPaid(userId: number, month: string): Promise<void> {
+        const subquery = db.getRepository("authorization")
+            .createQueryBuilder("auth")
+            .select("auth.authorization_id")
+            .where("auth.user = :userId");
+
+        await db.getRepository(Trip)
+            .createQueryBuilder()
+            .update()
+            .set({ is_paid: true })
+            .where("DATE_FORMAT(date, '%Y-%m') = :month", { month })
+            .andWhere(`authorization IN (${subquery.getQuery()})`)
+            .setParameters({ userId })
+            .execute();
     }
 }
 
