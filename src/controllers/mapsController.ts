@@ -59,6 +59,7 @@ class mapsController {
       const addresses = await tripChildService.getParentAddressesByTripId(Number(id)); 
       const school = await tripService.getSchoolByTripId(Number(id));
 
+      console.log("Dirección del conductor:", driver_address);
       console.log("Direcciones de los padres:", addresses);
       console.log("Dirección de la escuela:", school);
 
