@@ -44,7 +44,7 @@ class TripService {
         return result ? result : undefined;
     }
 
-    async putTripByAuthorizationAndShift(authorization: number, child_shift: string, selected_date: string): Promise<Trip | undefined> {
+    async putTripByAuthorizationAndShift(authorization: number, child_shift: string, selected_date: string, price: number): Promise<Trip | undefined> {
         const tripRepository = db.getRepository(Trip);  
         const trip = await tripRepository.findOne({
             where: {
@@ -58,6 +58,7 @@ class TripService {
           }); 
         if (trip) {
             trip.available_capacity -= 1; 
+            trip.total_price += price;
             await tripRepository.save(trip); 
         }
         return trip ? trip : undefined; 
@@ -87,6 +88,38 @@ class TripService {
             .getRawOne();
           
         return driver ? driver.address : '';
+    }
+
+    async getPaymentsByDriver(): Promise<any[]> {
+        const today = new Date();
+        const previousMonthDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        const formattedMonth = previousMonthDate.toISOString().slice(0, 7); // "YYYY-MM"
+
+        const tripRepository = db.getRepository(Trip);
+        const payments = await tripRepository.createQueryBuilder("trip")
+            .leftJoin("trip.authorization", "authorization")
+            .leftJoin("authorization.user", "user")
+            .select("user.id", "userId")
+            .addSelect("user.full_name", "full_name")
+            .addSelect("trip.date", "tripDate")
+            .addSelect("authorization.ubc", "ubc")
+            .addSelect("DATE_FORMAT(trip.date, '%Y-%m')", "month")
+            .addSelect("SUM(trip.total_price)", "totalAmount")
+            .groupBy("user.id")
+            .addGroupBy("user.full_name")
+            .addGroupBy("month")
+            .orderBy("month", "DESC")
+            .addOrderBy("user.full_name", "ASC")
+            .having("DATE_FORMAT(trip.date, '%Y-%m') = :month", { month: formattedMonth })
+            .getRawMany();
+
+        return payments.map((payment) => ({
+            userId: payment.userId,
+            full_name: payment.full_name,
+            totalAmount: parseFloat(payment.totalAmount),
+            month: payment.month,
+            ubc: payment.ubc
+        }));
     }
 }
 

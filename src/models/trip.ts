@@ -22,6 +22,9 @@ import { TripChild } from "./trip_child";
 
     @OneToMany(() => TripChild, (trip_child) => trip_child.trip)
     trip_child: TripChild[];
+
+    @Column({nullable: true })
+    total_price: number;
   
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     created_at: string;
