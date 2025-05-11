@@ -7,6 +7,8 @@ import cors from 'cors';
 // import https from 'https';
 import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
+import { startExpiringNotificationsCron, changeStatusOfExpiredAuthorizations } from "./cron/expiringNotificationsCron";
+
 
 dotenv.config();
 
@@ -23,6 +25,9 @@ const PORT =  3000;
 //   key: fs.readFileSync("server.key"),
 //   cert: fs.readFileSync("server.cert"),
 // }
+startExpiringNotificationsCron();
+changeStatusOfExpiredAuthorizations();
+
 
 AppDataSource.initialize()
   .then(() => {
