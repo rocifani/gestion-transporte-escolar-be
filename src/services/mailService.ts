@@ -57,5 +57,21 @@ export const sendNewAuthorizationNotification = async (userName: string, authori
   };
 
   await transporter.sendMail(mailOptions);
+};
+
+export const sendExpiringMail = async (userName: string, userEmail: string) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: userEmail,
+    subject: 'Habilitación próxima a vencer',
+    html: `<div style="font-family: 'Montserrat', sans-serif; color: #003366; text-align: center; padding: 20px; background-color: #f7f7f7; border-radius: 10px;">
+        <h2 style="font-size: 30px; color: #003366;">¡Hola ${userName}!</h2>
+        <p style="font-size: 16px; color: #333;">Recordá que tu habilitación está próxima a vencerse.</p>
+        <p style="font-size: 16px; color: #333;">Por favor revisa la aplicación y generá una nueva para seguir trabajando. Gracias!</p>
+      </div>`,
+  };
+
+  await transporter.sendMail(mailOptions);
 }
+
 

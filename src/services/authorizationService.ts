@@ -1,6 +1,7 @@
 import db from "../database/db";
 import { Authorization } from "../models/authorization";
 import { Child } from "../models/child";
+import { User } from "../models/user";
 
 class AuthorizationService {
 
@@ -86,8 +87,32 @@ class AuthorizationService {
 
         return authorizations;
     }
-    
-    
+
+    async getUsersWithAuthorizations(): Promise<User[]> {
+    const userRepository = db.getRepository(User);
+
+    const users = await userRepository
+        .createQueryBuilder('user')
+        .distinct(true)
+        .innerJoin('user.authorizations', 'authorization') // Relación desde User hacia Authorization
+        .getMany();
+
+    return users;
+    }
+
+
+    async getLastApprovedAuthorization(user_id: number): Promise<Authorization | null> {
+        const authorizationRepository = db.getRepository(Authorization); 
+        const authorizations = await authorizationRepository
+            .createQueryBuilder("authorization")
+            .where("authorization.user_id = :user_id", { user_id })
+            .andWhere("authorization.state = :state", { state: 2 }) 
+            .orderBy("authorization.created_at", "DESC")
+            .getMany();
+
+        return authorizations.length > 0 ? authorizations[0] : null;
+    }
+
 
 }
 

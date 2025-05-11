@@ -135,6 +135,16 @@ class AuthorizationController {
             return sendError(res, error.message); 
         }
     }
+
+    async getUsersWithAuthorization(_req: Request, res: Response) {
+      try{
+        const users = await authorizationService.getUsersWithAuthorizations();
+        sendSuccess(res, users);
+      }
+      catch(error: any){
+          sendError(res, error.message);
+      }
+    }
 }
 
 export default new AuthorizationController();
