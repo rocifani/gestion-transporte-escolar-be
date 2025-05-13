@@ -13,8 +13,8 @@ import { TripChild } from "./trip_child";
     @Column()
     available_capacity: number;
   
-    @Column({ type: "enum", enum: ["pending", "completed", "cancelled"], default: "pending" })
-    status?: "pending" | "completed" | "cancelled";
+    @Column({ type: "enum", enum: ["pending","in progress", "completed", "cancelled"], default: "pending" })
+    status?: "pending" | "in progress" | "completed" | "cancelled";
 
     @ManyToOne(() => Authorization, (authorization) => authorization.trips)
     @JoinColumn({ name: "authorization_id" })

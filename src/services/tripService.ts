@@ -1,6 +1,7 @@
 import db from "../database/db";
 import { Trip } from "../models/trip";
 import { Authorization } from "../models/authorization";
+import notificationService from "./notificationService";
 
 class TripService {
 
@@ -12,14 +13,17 @@ class TripService {
     async getTripByUser(id: number): Promise<Trip[]> {
         const tripRepository = db.getRepository(Trip); 
         console.log("ID: ", id);
-        return await tripRepository.createQueryBuilder("trip")
+        const trips = await tripRepository.createQueryBuilder("trip")
         .innerJoin("trip.trip_child", "trip_child")
-        .leftJoin("trip.authorization", "authorization")
-        .leftJoin("authorization.user", "user")
+        .leftJoinAndSelect("trip.authorization", "authorization")
+        .leftJoinAndSelect("authorization.user", "user")
         .where("user.id = :user_id", { user_id: id })
         .groupBy("trip.trip_id")
-        .select(["trip.trip_id", "trip.date", "trip.status"])
-        .getMany(); 
+        .addGroupBy("authorization.authorization_id") // necesario si hay GROUP BY
+        .select(["trip.trip_id", "trip.date", "trip.status", "authorization"])
+        .getMany();
+        console.log("Trips: ", trips);
+        return trips;
     }
 
     async getTripById(trip_id: number): Promise<Trip | undefined> {
@@ -141,6 +145,63 @@ class TripService {
             .andWhere(`authorization IN (${subquery.getQuery()})`)
             .setParameters({ userId })
             .execute();
+    }
+
+    async startTrip(tripId: number): Promise<string> {
+        const tripRepo = db.getRepository(Trip);
+        const trip = await tripRepo.findOne({
+        where: { trip_id: tripId },
+        relations: ["trip_child", "trip_child.child", "trip_child.child.user"],
+        });
+
+        if (!trip) throw new Error("Trip not found");
+
+        for (const tripChild of trip.trip_child) {
+        const userNotif = tripChild.child.user;
+
+        if (userNotif) {
+            await notificationService.postNotification({
+                notification_id: 0, 
+                title: "Viaje iniciado",
+                detail: `El viaje del día ${trip.date} ha comenzado.`,
+                user: userNotif,
+                is_read: false,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            });
+        }
+        }
+        trip.status = "in progress";
+        await tripRepo.save(trip);
+        return "Viaje iniciado y notificaciones enviadas";
+    }
+
+    async finishTrip(tripId: number): Promise<string> {
+        const tripRepo = db.getRepository(Trip);
+        const trip = await tripRepo.findOne({
+        where: { trip_id: tripId },
+        relations: ["trip_child", "trip_child.child", "trip_child.child.user"],
+        });
+        if (!trip) throw new Error("Trip not found");
+
+        for (const tripChild of trip.trip_child) {
+        const userNotif = tripChild.child.user;
+
+        if (userNotif) {
+            await notificationService.postNotification({
+                notification_id: 0, 
+                title: "Viaje finalizado",
+                detail: `El viaje del día ${trip.date} ha finalizado.`,
+                user: userNotif,
+                is_read: false,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            });
+        }
+        }
+        trip.status = "completed";
+        await tripRepo.save(trip);
+        return "Viaje finalizado y notificaciones enviadas";
     }
 }
 

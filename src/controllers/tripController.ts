@@ -99,11 +99,32 @@ class TripController {
         try {
           await tripService.markTripsAsPaid(userId, month);
           res.status(200).json({ message: "Pagos marcados como realizados" });
-        } catch (error) {
-          console.error(error);
-          res.status(500).json({ error: "Error al actualizar los pagos" });
+        } catch (error: any) {
+          return sendError(res, error.message); 
         }
       }
+
+    async startTrip(req: Request, res: Response): Promise<void> {
+      const tripId = parseInt(req.params.id);
+
+      try {
+        const result = await tripService.startTrip(tripId);
+        return sendSuccess(res, result); 
+      } catch (error: any) {
+        return sendError(res, error.message); 
+      }
+    };
+
+    async finishTrip(req: Request, res: Response): Promise<void> {
+      const tripId = parseInt(req.params.id);
+
+      try {
+        const result = await tripService.finishTrip(tripId);
+        return sendSuccess(res, result); 
+      } catch (error: any) {
+        return sendError(res, error.message); 
+      }
+    };
 
 
 }
