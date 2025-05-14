@@ -126,6 +126,19 @@ class TripController {
       }
     };
 
+    async cancelTripById(req: Request, res: Response): Promise<void> {
+      const tripId = parseInt(req.params.id);
+      const cancelReason = req.body.rejectR;
+
+      try {
+          const result = await tripService.cancelTripById(tripId, cancelReason);
+          return sendSuccess(res, result); 
+      } catch (error: any) {
+          return sendError(res, error.message); 
+      }
+    }
+
+
 
 }
 
