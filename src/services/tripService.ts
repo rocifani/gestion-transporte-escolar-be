@@ -23,7 +23,7 @@ class TripService {
             "trip.trip_id AS trip_id",
             "trip.date AS date",
             "trip.status AS status",
-            "auhorization",
+            "authorization",
             "COUNT(DISTINCT trip_child.trip_child_id) AS childrenCount"
         ])
         .getRawMany(); 
