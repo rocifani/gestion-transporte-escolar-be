@@ -10,6 +10,7 @@ tripRouter.get("/", tripController.getAllTrips)
 tripRouter.put("/pay", TokenValidation, tripController.markTripsAsPaid)
 tripRouter.post("/start/:id", TokenValidation, tripController.startTrip)
 tripRouter.post("/finish/:id", TokenValidation, tripController.finishTrip)
+tripRouter.post("/cancel/:id", TokenValidation, tripController.cancelTripById)
 tripRouter.post("/", tripController.postTrip)
 
 export default tripRouter;

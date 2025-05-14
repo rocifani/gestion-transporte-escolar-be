@@ -206,6 +206,35 @@ class TripService {
         await tripRepo.save(trip);
         return "Viaje finalizado y notificaciones enviadas";
     }
+
+    async cancelTripById(tripId: number, cancelReason: string): Promise<string> {
+        const tripRepo = db.getRepository(Trip);
+        const trip = await tripRepo.findOne({
+        where: { trip_id: tripId },
+        relations: ["trip_child", "trip_child.child", "trip_child.child.user"],
+        });
+        if (!trip) throw new Error("Trip not found");
+
+        for (const tripChild of trip.trip_child) {
+        const userNotif = tripChild.child.user;
+
+        if (userNotif) {
+            await notificationService.postNotification({
+                notification_id: 0, 
+                title: "Viaje cancelado",
+                detail: `El viaje del día ${trip.date} ha sido cancelado. La razón es: ${cancelReason}`,
+                user: userNotif,
+                is_read: false,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            });
+        }
+        }
+        trip.status = "cancelled";
+        trip.cancel_reason = cancelReason;
+        await tripRepo.save(trip);
+        return "Viaje cancelado y notificaciones enviadas";
+    }
 }
 
 export default new TripService();

@@ -28,6 +28,9 @@ import { TripChild } from "./trip_child";
 
     @Column({default: false})
     is_paid: boolean;
+
+    @Column({nullable: true })
+    cancel_reason: string;
   
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     created_at: string;
