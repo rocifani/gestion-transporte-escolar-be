@@ -46,7 +46,6 @@
     "@ngrok/ngrok": "^1.4.1",
     "@types/mercadopago-sdk-js": "^2.0.17",
     "axios": "^1.8.4",
-    "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.6.0",
     "cors": "^2.8.5",

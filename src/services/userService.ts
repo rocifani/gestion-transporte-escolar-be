@@ -1,6 +1,6 @@
 import db from "../database/db";
 import { User } from "../models/user";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 
 class UserService {
 
@@ -18,7 +18,7 @@ class UserService {
     async login(email: string, password: string): Promise<User | undefined> {
         const userRepository = db.getRepository(User);  
         const user = await userRepository.findOne({ where: { email } });  
-        if (user && await bcrypt.compare(password, user.password)) {
+        if (user && await bcryptjs.compare(password, user.password)) {
             return user;
         }
         return undefined;
@@ -40,7 +40,7 @@ class UserService {
     async signup(data: User): Promise<User | undefined> {
         const userRepository = db.getRepository(User);  
 
-        data.password = await bcrypt.hash(data.password, 10);  
+        data.password = await bcryptjs.hash(data.password, 10);  
         const result = await userRepository.save(data);  
 
         return result ? result : undefined;  
@@ -65,7 +65,7 @@ class UserService {
         if (user) {
      
             user.email = data.email || user.email;
-            user.password = data.password ? await bcrypt.hash(data.password, 10) : user.password;
+            user.password = data.password ? await bcryptjs.hash(data.password, 10) : user.password;
             user.full_name = data.full_name || user.full_name;
             user.phone_number = data.phone_number || user.phone_number;
             user.address = data.address || user.address;
