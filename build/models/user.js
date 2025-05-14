@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const authorization_1 = require("./authorization");
 const child_1 = require("./child");
 const price_1 = require("./price");
@@ -31,8 +31,8 @@ const notification_1 = require("./notification");
 let User = class User {
     encryptPassword(password) {
         return __awaiter(this, void 0, void 0, function* () {
-            const salt = yield bcrypt_1.default.genSalt(10);
-            return bcrypt_1.default.hash(password, salt);
+            const salt = yield bcryptjs_1.default.genSalt(10);
+            return bcryptjs_1.default.hash(password, salt);
         });
     }
 };

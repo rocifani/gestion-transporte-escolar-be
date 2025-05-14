@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../database/db"));
 const user_1 = require("../models/user");
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 class UserService {
     getAllUsers() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -33,7 +33,7 @@ class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             const userRepository = db_1.default.getRepository(user_1.User);
             const user = yield userRepository.findOne({ where: { email } });
-            if (user && (yield bcrypt_1.default.compare(password, user.password))) {
+            if (user && (yield bcryptjs_1.default.compare(password, user.password))) {
                 return user;
             }
             return undefined;
@@ -54,7 +54,7 @@ class UserService {
     signup(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const userRepository = db_1.default.getRepository(user_1.User);
-            data.password = yield bcrypt_1.default.hash(data.password, 10);
+            data.password = yield bcryptjs_1.default.hash(data.password, 10);
             const result = yield userRepository.save(data);
             return result ? result : undefined;
         });
@@ -79,7 +79,7 @@ class UserService {
             const user = yield userRepository.findOne({ where: { id } });
             if (user) {
                 user.email = data.email || user.email;
-                user.password = data.password ? yield bcrypt_1.default.hash(data.password, 10) : user.password;
+                user.password = data.password ? yield bcryptjs_1.default.hash(data.password, 10) : user.password;
                 user.full_name = data.full_name || user.full_name;
                 user.phone_number = data.phone_number || user.phone_number;
                 user.address = data.address || user.address;
