@@ -14,62 +14,97 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../database/db"));
 const user_1 = require("../models/user");
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 class UserService {
     getAllUsers() {
         return __awaiter(this, void 0, void 0, function* () {
-            const users = yield db_1.default.query("SELECT * FROM user");
-            return users;
+            const userRepository = db_1.default.getRepository(user_1.User);
+            return yield userRepository.find();
         });
     }
     getUserById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield db_1.default.query("SELECT * FROM user WHERE id = ?", id);
-            if (Array.isArray(user) && user.length > 0) {
-                return user[0];
-            }
-            return undefined;
+            const userRepository = db_1.default.getRepository(user_1.User);
+            const user = yield userRepository.findOne({ where: { id } });
+            return user !== null && user !== void 0 ? user : undefined;
         });
     }
     login(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield db_1.default.query("SELECT * FROM user WHERE email = ?", email);
-            if (user.length > 0) {
-                const passMatch = yield bcryptjs_1.default.compare(password, user[0].password);
-                if (passMatch) {
-                    return user[0];
-                }
+            const userRepository = db_1.default.getRepository(user_1.User);
+            const user = yield userRepository.findOne({ where: { email } });
+            if (user && (yield bcrypt_1.default.compare(password, user.password))) {
+                return user;
+            }
+            return undefined;
+        });
+    }
+    confirmUser(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userRepository = db_1.default.getRepository(user_1.User);
+            const user = yield userRepository.findOne({ where: { id } });
+            if (user) {
+                user.is_confirmed = true;
+                yield userRepository.save(user);
+                return user;
             }
             return undefined;
         });
     }
     signup(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            const userInstance = new user_1.User();
-            data.password = yield userInstance.encryptPassword(data.password);
-            const result = yield db_1.default.query("INSERT INTO user SET ?", data);
-            if (result.insertId) {
-                return yield this.getUserById(result.insertId);
-            }
-            return undefined;
+            const userRepository = db_1.default.getRepository(user_1.User);
+            data.password = yield bcrypt_1.default.hash(data.password, 10);
+            const result = yield userRepository.save(data);
+            return result ? result : undefined;
+        });
+    }
+    signUpWithGoogle(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userRepository = db_1.default.getRepository(user_1.User);
+            const result = yield userRepository.save(data);
+            return result ? result : undefined;
         });
     }
     getUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield db_1.default.query("SELECT * FROM user WHERE email = ?", email);
-            if (Array.isArray(user) && user.length > 0) {
-                return user[0];
-            }
-            return undefined;
+            const userRepository = db_1.default.getRepository(user_1.User);
+            const user = yield userRepository.findOne({ where: { email } });
+            return user !== null && user !== void 0 ? user : undefined;
         });
     }
     putUser(id, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.default.query("UPDATE user SET ? WHERE id = ?", [data, id]);
-            if (result.affectedRows) {
-                return yield this.getUserById(id);
+            const userRepository = db_1.default.getRepository(user_1.User);
+            const user = yield userRepository.findOne({ where: { id } });
+            if (user) {
+                user.email = data.email || user.email;
+                user.password = data.password ? yield bcrypt_1.default.hash(data.password, 10) : user.password;
+                user.full_name = data.full_name || user.full_name;
+                user.phone_number = data.phone_number || user.phone_number;
+                user.address = data.address || user.address;
+                user.profile_picture = data.profile_picture || user.profile_picture;
+                user.birth_date = data.birth_date || user.birth_date;
+                user.role_id = data.role_id || user.role_id;
+                user.dni = data.dni || user.dni;
+                yield userRepository.save(user);
+                return user;
             }
             return undefined;
+        });
+    }
+    forgotPassword(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userRepository = db_1.default.getRepository(user_1.User);
+            const user = yield userRepository.findOne({ where: { email } });
+            return user !== null && user !== void 0 ? user : undefined;
+        });
+    }
+    getAdminUser() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userRepository = db_1.default.getRepository(user_1.User);
+            const adminUser = yield userRepository.findOne({ where: { role_id: 3 } });
+            return adminUser !== null && adminUser !== void 0 ? adminUser : undefined;
         });
     }
 }
