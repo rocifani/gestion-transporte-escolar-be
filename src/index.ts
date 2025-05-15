@@ -34,7 +34,8 @@ AppDataSource.initialize()
     const httpServer = createServer(app);
     const io = new SocketIOServer(httpServer, {
       cors: {
-        origin: "*", // o tu dominio frontend
+        origin: 'https://gestion-transporte-escolar-two.vercel.app',
+        credentials: true // si usás cookies o headers de autenticación
       },
     });
 
