@@ -18,7 +18,7 @@ app.use(cors());
 app.use("/", routes);
 
 
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = Number(process.env.DB_PORT);
 // const HTTPS_PORT = 3443;
 
 // const httpsOptions = {
