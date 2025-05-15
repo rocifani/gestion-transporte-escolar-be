@@ -6,6 +6,7 @@
   "scripts": {
     "lint": "ts-standard",
     "dev": "ts-node-dev src/index.ts",
+    "build": "tsc",
     "start": "node build/index.js",
     "tsc": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
