@@ -13,9 +13,9 @@ const AppDataSource = new typeorm_1.DataSource({
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    entities: ["src/models/*.ts"],
-    migrations: ["src/migrations/*.ts"],
-    synchronize: false,
+    entities: ["build/models/*.js"],
+    migrations: ["build/migrations/*.js"],
+    synchronize: true,
     logging: true,
 });
 exports.default = AppDataSource;
