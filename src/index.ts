@@ -18,11 +18,7 @@ app.use(cors());
 app.use("/", routes);
 
 
-<<<<<<< HEAD
-const PORT =  process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-=======
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
->>>>>>> 057e37ffa13eb8cc356c7bc1e77116793d9d542b
 // const HTTPS_PORT = 3443;
 
 // const httpsOptions = {
@@ -38,12 +34,7 @@ AppDataSource.initialize()
     const httpServer = createServer(app);
     const io = new SocketIOServer(httpServer, {
       cors: {
-<<<<<<< HEAD
-        origin: "https://gestion-transporte-escolar-two.vercel.app", // o tu dominio frontend
-=======
-        origin: 'https://gestion-transporte-escolar-two.vercel.app',
-        credentials: true // si usás cookies o headers de autenticación
->>>>>>> 057e37ffa13eb8cc356c7bc1e77116793d9d542b
+        origin: '*'
       },
     });
 
