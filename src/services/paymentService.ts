@@ -65,9 +65,9 @@ import authorizationService from './authorizationService';
                      email: user?.email || "example@e.com"
                  },
                  back_urls: {
-                     success: "http://localhost:8100/success",
-                     failure: "https://localhost:8100/failure",
-                     pending: "https://localhost:3000/pending"
+                     success: "https://gestion-transporte-escolar-two.vercel.app/success",
+                     failure: "https://gestion-transporte-escolar-two.vercel.app/failure",
+                     pending: "https://gestion-transporte-escolar-two.vercel.app/pending"
                  },
                  metadata: {
                      child_id: trip.child_id,
@@ -76,7 +76,7 @@ import authorizationService from './authorizationService';
                      price: total
                  },
                  auto_return: "approved",
-                 notification_url: "https://92f8-190-2-108-170.ngrok-free.app/payment/webhook"
+                 notification_url: "https://gestion-transporte-escolar-be-production-e770.up.railway.app/payment/webhook"
              }
          });
      

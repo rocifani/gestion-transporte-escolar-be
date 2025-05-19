@@ -12,7 +12,11 @@ const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   entities: ["build/models/*.js"],
   migrations: ["build/migrations/*.js"],
+<<<<<<< HEAD
   synchronize: false,
+=======
+  synchronize: true,
+>>>>>>> 057e37ffa13eb8cc356c7bc1e77116793d9d542b
   logging: true,
 });
 

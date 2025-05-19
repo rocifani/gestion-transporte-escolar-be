@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 import { Authorization } from "./authorization";
 import { Child } from "./child";
 import { Price } from "./price";
@@ -62,7 +62,7 @@ export class User {
   notifications: Notification[];
 
 async encryptPassword(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt(10);
-    return bcrypt.hash(password, salt);
+    const salt = await bcryptjs.genSalt(10);
+    return bcryptjs.hash(password, salt);
     }
 }
