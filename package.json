@@ -22,7 +22,6 @@
   "typeorm": "node --loader ts-node/esm ./node_modules/typeorm/cli.js",
   "author": "",
   "license": "ISC",
-  "type": "module",
   "bugs": {
     "url": "https://github.com/rocifani/gestion-transporte-escolar-be/issues"
   },
