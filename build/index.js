@@ -24,6 +24,12 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 //   key: fs.readFileSync("server.key"),
 //   cert: fs.readFileSync("server.cert"),
 // }
+app.get('/', (_req, res) => {
+    res.send(`
+    <h1>🚀 Backend activo en Railway</h1>
+    <p>El servidor está funcionando correctamente. 🚀 </p>
+  `);
+});
 (0, expiringNotificationsCron_1.startExpiringNotificationsCron)();
 (0, expiringNotificationsCron_1.changeStatusOfExpiredAuthorizations)();
 db_1.default.initialize()
