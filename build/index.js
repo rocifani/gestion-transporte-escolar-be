@@ -18,7 +18,7 @@ const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.use("/", routes_1.default);
-const PORT = 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 // const HTTPS_PORT = 3443;
 // const httpsOptions = {
 //   key: fs.readFileSync("server.key"),
@@ -31,7 +31,8 @@ db_1.default.initialize()
     const httpServer = (0, http_1.createServer)(app);
     const io = new socket_io_1.Server(httpServer, {
         cors: {
-            origin: "*", // o tu dominio frontend
+            origin: 'https://gestion-transporte-escolar-two.vercel.app',
+            credentials: true // si usás cookies o headers de autenticación
         },
     });
     const ubicacionesChoferes = new Map();
