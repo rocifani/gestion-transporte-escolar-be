@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import authorizationService from '../services/authorizationService';
 import { sendError, sendSuccess } from '../utils/requestHandlers';
 import  userService from '../services/userService';
-import { sendNewAuthorizationNotification } from '../services/mailService';
+import { sendNewAuthorizationNotification, sendStatusChangeMail } from '../services/mailService';
 import notificationService from '../services/notificationService';
 
 class AuthorizationController {
@@ -94,9 +94,29 @@ class AuthorizationController {
         try{
             const id = Number(req.params['id']); 
             const data = req.body;
+            const lastAuth = await authorizationService.getAuthorizationById(id);
+            if (!lastAuth) {
+                return sendError(res, "Habilitacion no encontrada", 404); 
+            }
             const authorization = await authorizationService.putAuthorization(id, data);
             if(authorization){
+                if(lastAuth.state != authorization.state){
+                  const user = await userService.getUserById(Number(authorization.user));
+                  if(user){
+                    notificationService.postNotification({
+                      notification_id: 0, 
+                      title: "Estado de habilitación actualizado",
+                      detail: `El estado de tu habilitación ha cambiado a ${authorization.state}. Podés revisarlo en la app.`,
+                      user: user,
+                      is_read: false,
+                      created_at: new Date().toISOString(),
+                      updated_at: new Date().toISOString()
+                    });
+                    sendStatusChangeMail(user.full_name, user.email, authorization.state);
+                  }
+                }
                 sendSuccess(res, authorization);
+
             }
             else{
                 sendError(res, "Habilitacion no encontrada", 404); // TO DO: manejar errores específicos
