@@ -11,22 +11,14 @@ class TripService {
     } 
 
     async getTripByUser(id: number): Promise<Trip[]> {
-        const tripRepository = db.getRepository(Trip); 
+    const tripRepository = db.getRepository(Trip); 
 
-        return await tripRepository.createQueryBuilder("trip")
+    return await tripRepository.createQueryBuilder("trip")
         .innerJoin("trip.trip_child", "trip_child")
         .leftJoinAndSelect("trip.authorization", "authorization")
         .leftJoinAndSelect("authorization.user", "user")
         .where("user.id = :user_id", { user_id: id })
-        .groupBy("trip.trip_id")
-        .select([
-            "trip.trip_id AS trip_id",
-            "trip.date AS date",
-            "trip.status AS status",
-            "authorization",
-            "COUNT(DISTINCT trip_child.trip_child_id) AS childrenCount"
-        ])
-        .getRawMany(); 
+        .getMany();
     }
 
     async getTripById(trip_id: number): Promise<Trip | undefined> {
