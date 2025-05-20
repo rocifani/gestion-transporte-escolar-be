@@ -29,8 +29,8 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 app.get('/', (_req, res) => {
   res.send(`
-    <h1>🚀 Backend activo en Railway</h1>
-    <p>El servidor está funcionando correctamente. 🚀 </p>
+    <h1>🚀 Backend activo en Railway 🚀</h1>
+    <p>El servidor está funcionando correctamente.</p>
   `);
 });
 
