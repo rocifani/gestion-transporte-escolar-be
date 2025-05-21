@@ -10,13 +10,9 @@ const AppDataSource = new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  entities: ["build/models/*.js"],
-  migrations: ["build/migrations/*.js"],
-<<<<<<< HEAD
+  entities: ["src/models/*.ts"],
+  migrations: ["src/migrations/*.ts"],
   synchronize: false,
-=======
-  synchronize: true,
->>>>>>> 057e37ffa13eb8cc356c7bc1e77116793d9d542b
   logging: true,
 });
 
