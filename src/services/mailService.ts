@@ -74,4 +74,19 @@ export const sendExpiringMail = async (userName: string, userEmail: string) => {
   await transporter.sendMail(mailOptions);
 }
 
+export const sendStatusChangeMail = async (userName: string, userEmail: string, status: number) => {
+  const statusText = status === 2 ? 'Aprobada' : 'Rechazada';
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: userEmail,
+    subject: 'Estado de habilitación actualizado',
+    html: `<div style="font-family: 'Montserrat', sans-serif; color: #003366; text-align: center; padding: 20px; background-color: #f7f7f7; border-radius: 10px;">
+        <h2 style="font-size: 30px; color: #003366;">¡Hola ${userName}!</h2>
+        <p style="font-size: 16px; color: #333;">El estado de tu habilitación ha cambiado a ${statusText}.</p>
+        <p style="font-size: 16px; color: #333;">Podés revisarlo en la aplicación.</p>
+      </div>`,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
 
