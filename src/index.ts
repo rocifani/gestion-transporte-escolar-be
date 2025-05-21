@@ -19,15 +19,23 @@ app.use("/", routes);
 
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+
 // const HTTPS_PORT = 3443;
 
 // const httpsOptions = {
 //   key: fs.readFileSync("server.key"),
 //   cert: fs.readFileSync("server.cert"),
 // }
+
+app.get('/', (_req, res) => {
+  res.send(`
+    <h1>🚀 Backend activo en Railway 🚀</h1>
+    <p>El servidor está funcionando correctamente.</p>
+  `);
+});
+
 startExpiringNotificationsCron();
 changeStatusOfExpiredAuthorizations();
-
 
 AppDataSource.initialize()
   .then(() => {

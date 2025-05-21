@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -21,7 +12,7 @@ const transporter = nodemailer_1.default.createTransport({
         pass: process.env.EMAIL_PASSWORD,
     },
 });
-const sendConfirmationEmail = (email, token) => __awaiter(void 0, void 0, void 0, function* () {
+const sendConfirmationEmail = async (email, token) => {
     const url = `${process.env.FRONTEND_URL}/confirm-email/${token}`;
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -34,10 +25,10 @@ const sendConfirmationEmail = (email, token) => __awaiter(void 0, void 0, void 0
         <p style="margin-top: 20px; font-size: 14px; color: #666;">Si no realizaste esta solicitud, puedes ignorar este correo.</p>
       </div>`,
     };
-    yield transporter.sendMail(mailOptions);
-});
+    await transporter.sendMail(mailOptions);
+};
 exports.sendConfirmationEmail = sendConfirmationEmail;
-const sendForgotPasswordEmail = (email, token) => __awaiter(void 0, void 0, void 0, function* () {
+const sendForgotPasswordEmail = async (email, token) => {
     const url = `${process.env.FRONTEND_URL}/reset-password/${token}`;
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -50,10 +41,10 @@ const sendForgotPasswordEmail = (email, token) => __awaiter(void 0, void 0, void
         <p style="margin-top: 20px; font-size: 14px; color: #666;">Si no realizaste esta solicitud, puedes ignorar este correo.</p>
       </div>`,
     };
-    yield transporter.sendMail(mailOptions);
-});
+    await transporter.sendMail(mailOptions);
+};
 exports.sendForgotPasswordEmail = sendForgotPasswordEmail;
-const sendNewAuthorizationNotification = (userName, authorizationId, adminEmail, adminName) => __awaiter(void 0, void 0, void 0, function* () {
+const sendNewAuthorizationNotification = async (userName, authorizationId, adminEmail, adminName) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: adminEmail,
@@ -64,10 +55,10 @@ const sendNewAuthorizationNotification = (userName, authorizationId, adminEmail,
         <p style="font-size: 16px; color: #333;">Por favor revisa la aplicación.</p>
       </div>`,
     };
-    yield transporter.sendMail(mailOptions);
-});
+    await transporter.sendMail(mailOptions);
+};
 exports.sendNewAuthorizationNotification = sendNewAuthorizationNotification;
-const sendExpiringMail = (userName, userEmail) => __awaiter(void 0, void 0, void 0, function* () {
+const sendExpiringMail = async (userName, userEmail) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: userEmail,
@@ -78,6 +69,6 @@ const sendExpiringMail = (userName, userEmail) => __awaiter(void 0, void 0, void
         <p style="font-size: 16px; color: #333;">Por favor revisa la aplicación y generá una nueva para seguir trabajando. Gracias!</p>
       </div>`,
     };
-    yield transporter.sendMail(mailOptions);
-});
+    await transporter.sendMail(mailOptions);
+};
 exports.sendExpiringMail = sendExpiringMail;
